@@ -1,0 +1,5 @@
+name: RCTrade
+main: de.raidcraft.trade.TradePlugin
+version: ${project.version}#${build.number}
+author: Silthus
+website: www.raid-craft.de
