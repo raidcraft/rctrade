@@ -40,4 +40,12 @@
             <url>http://dev.raid-craft.de/nexus/content/groups/public/</url>
         </repository>
     </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.raidcraft</groupId>
+            <artifactId>raidcraft-api</artifactId>
+            <version>${rc.version}</version>
+        </dependency>
+    </dependencies>
 </project>
