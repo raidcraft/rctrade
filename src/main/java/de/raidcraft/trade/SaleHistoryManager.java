@@ -53,9 +53,6 @@ public class SaleHistoryManager {
                 RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
                 continue;
             }
-            if(itemStack == null) {
-                RaidCraft.LOGGER.info("DEBUG: ITEMSTACK IS NULL!");
-            }
 
             SoldItem soldItem = new SoldItem(player.getName(), itemStack, tSoldItem.getId(), tSoldItem.getDate());
             soldItems.add(soldItem);
@@ -66,7 +63,12 @@ public class SaleHistoryManager {
 
     public void removeSale(int databaseId) {
 
-        RaidCraft.getDatabase(TradePlugin.class).delete(TSoldItem.class, databaseId);
+        TSoldItem tSoldItem = RaidCraft.getDatabase(TradePlugin.class).find(TSoldItem.class, databaseId);
+        if(tSoldItem == null) return;
+        try {
+            itemStorage.removeObject(tSoldItem.getStorageId());
+        } catch (StorageException e) {}
+        RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
     }
 
     private void deleteOldSales(Player player) {

@@ -4,9 +4,12 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.tooltip.SingleLineTooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,13 +72,14 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         for(SoldItem soldItem : soldItems) {
             ItemStack itemStack = soldItem.getItemStack();
 
-//            CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
-//            if(customItemStack == null) {
-//                //TODO delete sold item
-//                continue;
-//            }
-//            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, "Verkauft am " + soldItem.getDate()));
-            inventory.setItem(slotNumber, itemStack);
+            CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
+            if(customItemStack == null) {
+                RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().removeSale(soldItem.getDatabaseId());
+                continue;
+            }
+            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, ChatColor.DARK_PURPLE + "Verkauft am " + soldItem.getDate()));
+            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, ChatColor.LIGHT_PURPLE + "Klicken um Verkauf rückgängig zu machen!"));
+            inventory.setItem(slotNumber, customItemStack);
 
             slotNumber++;
             if(slotNumber > 53) break;
