@@ -1,4 +1,4 @@
-package de.raidcraft.trade.api;
+package de.raidcraft.trade.api.window;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.trade.TradePlugin;

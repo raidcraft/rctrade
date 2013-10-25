@@ -1,4 +1,4 @@
-package de.raidcraft.trade.api;
+package de.raidcraft.trade.api.window;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
@@ -7,6 +7,7 @@ import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.tooltip.FixedMultilineTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.trade.TradePlugin;
+import de.raidcraft.trade.api.SoldItem;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -163,7 +164,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         if(!event.getInventory().getViewers().contains(partner.getPlayer())) return;
 
         //XXX important to unregister all listener!!!
-        //TODO: add new implemented listeners!
+        //TODO: add new implemented handlers!
         InventoryClickEvent.getHandlerList().unregister(this);
         InventoryCloseEvent.getHandlerList().unregister(this);
     }

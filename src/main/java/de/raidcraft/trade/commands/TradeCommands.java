@@ -2,9 +2,10 @@ package de.raidcraft.trade.commands;
 
 import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.trade.TradePlugin;
-import de.raidcraft.trade.api.NpcTradeWindow;
+import de.raidcraft.trade.api.window.NpcTradeWindow;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import de.raidcraft.trade.api.partner.SimplePlayerTradePartner;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -35,6 +36,17 @@ public class TradeCommands {
         public NestedCommands(TradePlugin plugin) {
 
             this.plugin = plugin;
+        }
+
+        @Command(
+                aliases = {"reload"},
+                desc = "Plugin reload"
+        )
+        @CommandPermissions("rctrade.cmd.reload")
+        public void reload(CommandContext args, CommandSender sender) throws CommandException {
+
+            plugin.reload();
+            sender.sendMessage(ChatColor.GREEN + "RCTrade wurde neugeladen!");
         }
 
         @Command(

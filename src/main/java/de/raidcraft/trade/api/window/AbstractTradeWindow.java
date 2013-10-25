@@ -1,4 +1,4 @@
-package de.raidcraft.trade.api;
+package de.raidcraft.trade.api.window;
 
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
