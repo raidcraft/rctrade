@@ -38,6 +38,7 @@ public class SaleHistoryManager {
         tSoldItem.setDate(new Timestamp(System.currentTimeMillis()));
         tSoldItem.setStorageId(storageId);
         RaidCraft.getDatabase(TradePlugin.class).save(tSoldItem);
+        RaidCraft.LOGGER.info("DEBUG 0");
         deleteOldSales(player);
     }
 
@@ -87,6 +88,7 @@ public class SaleHistoryManager {
                 try {
                     itemStorage.removeObject(tSoldItem.getStorageId());
                 } catch (StorageException e) {}
+                RaidCraft.LOGGER.info("DEBUG 1: " + i);
                 RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
             }
         }

@@ -72,7 +72,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
             slotNumber++;
             if(slotNumber > 53) break;
         }
-
+        RaidCraft.LOGGER.info("DEBUG 2");
         partner.getPlayer().updateInventory();
     }
 
