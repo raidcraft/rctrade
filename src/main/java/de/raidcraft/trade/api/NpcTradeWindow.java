@@ -54,7 +54,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         Economy economy = RaidCraft.getEconomy();
         double price = customItemStack.getItem().getSellPrice() * customItemStack.getAmount();
 
-        inventory.setItem(slotNumber, null);
+        inventory.remove(customItemStack);
         economy.add(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Item " + customItemStack.getAmount() + "x" + customItemStack.getItem().getName() + " verkauft");
         RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().addSale(customItemStack, partner.getPlayer());
         refreshSaleHistory();
