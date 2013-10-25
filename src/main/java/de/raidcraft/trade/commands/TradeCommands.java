@@ -69,7 +69,7 @@ public class TradeCommands {
                 tradeWindow.addOffer(new SimpleCustomItemOffer(46.00, RaidCraft.getCustomItemStack(864)));
                 tradeWindow.addOffer(new SimpleCustomItemOffer(2.00, RaidCraft.getCustomItemStack(1196)));
             } catch (CustomItemException e) {
-                RaidCraft.LOGGER.info(e.getMessage());
+                RaidCraft.LOGGER.info("RCTRade: " + e.getMessage());
             }
             tradeWindow.open();
         }

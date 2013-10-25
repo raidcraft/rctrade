@@ -12,6 +12,7 @@ public class SimpleCustomItemOffer extends AbstractOffer implements CustomItemOf
     public SimpleCustomItemOffer(double price, CustomItemStack customItemStack) {
 
         super(price, customItemStack);
+        this.customItemStack = customItemStack;
     }
 
     @Override
