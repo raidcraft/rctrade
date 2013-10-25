@@ -105,8 +105,12 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
     private void refreshSaleHistory() {
 
         List<SoldItem> soldItems = RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().getSales(partner.getPlayer());
-        int slotNumber = 45;
-        for(SoldItem soldItem : soldItems) {
+        for(int i = 45; i <= 53; i++) {
+            if(soldItems.size() < i - 44) {
+                inventory.setItem(i, null);
+                continue;
+            }
+            SoldItem soldItem = soldItems.get(i - 45);
             ItemStack itemStack = soldItem.getItemStack();
             CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
             if(customItemStack == null) {
@@ -115,10 +119,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
             }
             customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, ChatColor.DARK_PURPLE + "Verkauft am " + soldItem.getDate()));
             customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, ChatColor.LIGHT_PURPLE + "Klicken um Verkauf rückgängig zu machen!"));
-            inventory.setItem(slotNumber, customItemStack);
-
-            slotNumber++;
-            if(slotNumber > 53) break;
+            inventory.setItem(i, customItemStack);
         }
     }
 
