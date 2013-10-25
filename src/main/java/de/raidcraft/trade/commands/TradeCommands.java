@@ -64,10 +64,10 @@ public class TradeCommands {
             NpcTradeWindow tradeWindow = new NpcTradeWindow(playerTradePartner);
             try {
                 tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(43)));
-                tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(816)));
-                tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(768)));
-                tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(864)));
-                tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(1196)));
+                tradeWindow.addOffer(new SimpleCustomItemOffer(0.42, RaidCraft.getCustomItemStack(816)));
+                tradeWindow.addOffer(new SimpleCustomItemOffer(13.42, RaidCraft.getCustomItemStack(768)));
+                tradeWindow.addOffer(new SimpleCustomItemOffer(46.00, RaidCraft.getCustomItemStack(864)));
+                tradeWindow.addOffer(new SimpleCustomItemOffer(2.00, RaidCraft.getCustomItemStack(1196)));
             } catch (CustomItemException e) {
                 RaidCraft.LOGGER.info(e.getMessage());
             }
