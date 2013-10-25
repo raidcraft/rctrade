@@ -178,6 +178,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                     ChatColor.DARK_GRAY + "---------------------------------------",
                     ChatColor.DARK_RED + "Kaufpreis: " + offer.getPriceString(),
                     ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!"));
+            displayItem.rebuild();
             inventory.setItem(slotCount, displayItem);
 
             slotCount++;
