@@ -9,7 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * @author Philip Urban
@@ -24,7 +26,9 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
         inventory = Bukkit.createInventory(null, 54, "Händler");
         ItemStack separator = new ItemStack(Material.PUMPKIN_STEM);
-        separator.getItemMeta().setDisplayName("");
+        ItemMeta itemMeta = separator.getItemMeta();
+        itemMeta.setDisplayName("~");
+        separator.setItemMeta(itemMeta);
         inventory.setItem(27, separator);
         inventory.setItem(28, separator.clone());
         inventory.setItem(29, separator.clone());
@@ -47,26 +51,34 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
 
-        RaidCraft.LOGGER.info("inventory click");
-
         if(!event.getInventory().getViewers().contains(partner.getPlayer())) return;
 
         // buy item from npc
-        if(event.getSlot() <= 27) {
+        if(event.getRawSlot() <= 27) {
 
         }
 
         // undo last sell/buy
-        else if(event.getSlot() > 35 && event.getSlot() < 54) {
+        else if(event.getRawSlot() > 35 && event.getRawSlot() < 54) {
 
         }
 
         // sell owned custom item
-        else if(event.getSlot() > 53 && CustomItemUtil.isCustomItem(event.getCurrentItem())) {
+        else if(event.getRawSlot() > 53 && CustomItemUtil.isCustomItem(event.getCurrentItem())) {
 
         }
 
-        RaidCraft.LOGGER.info("DEBUG: Clicked Slot: " + event.getSlot());
+        RaidCraft.LOGGER.info("DEBUG: Clicked Slot: " + event.getRawSlot());
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+
+        if(!event.getInventory().getViewers().contains(partner.getPlayer())) return;
+
+        //XXX important to unregister all listener!!!
+        InventoryClickEvent.getHandlerList().unregister(this);
+        InventoryCloseEvent.getHandlerList().unregister(this);
     }
 }
