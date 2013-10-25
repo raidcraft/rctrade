@@ -4,7 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.tooltip.SingleLineTooltip;
+import de.raidcraft.api.items.tooltip.FixedMultilineTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
@@ -120,8 +120,9 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().removeSale(soldItem.getDatabaseId());
                 continue;
             }
-            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.ATTRIBUTES, ChatColor.DARK_PURPLE + "Verkauft am " + soldItem.getDate()));
-            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.ATTRIBUTES, ChatColor.LIGHT_PURPLE + "Klicken um Verkauf rückgängig zu machen!"));
+            customItemStack.setTooltip(new FixedMultilineTooltip(TooltipSlot.MISC,
+                    ChatColor.DARK_PURPLE + "Verkauft am " + soldItem.getDate(),
+                    ChatColor.LIGHT_PURPLE + "Klicken um Verkauf rückgängig zu machen!"));
             customItemStack.rebuild();
             inventory.setItem(i, customItemStack);
         }
