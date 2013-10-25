@@ -1,14 +1,8 @@
 package de.raidcraft.trade.api;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.economy.BalanceSource;
-import de.raidcraft.api.economy.Economy;
-import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.tooltip.SingleLineTooltip;
-import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
-import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -49,14 +43,14 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         RaidCraft.getComponent(TradePlugin.class).registerEvents(this);
     }
 
-    private void sell(CustomItemStack customItemStack, int slotNumber) {
+    private void sell(ItemStack itemStack, int slotNumber) {
 
-        Economy economy = RaidCraft.getEconomy();
-        double price = customItemStack.getItem().getSellPrice() * customItemStack.getAmount();
-
+//        Economy economy = RaidCraft.getEconomy();
+//        double price = itemStack.getItem().getSellPrice() * itemStack.getAmount();
+//
+//        economy.add(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Item " + itemStack.getAmount() + "x" + itemStack.getItem().getName() + " verkauft");
         inventory.setItem(slotNumber, new ItemStack(Material.AIR));
-        economy.add(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Item " + customItemStack.getAmount() + "x" + customItemStack.getItem().getName() + " verkauft");
-        RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().addSale(customItemStack, partner.getPlayer());
+        RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().addSale(itemStack, partner.getPlayer());
         refreshSaleHistory();
     }
 
@@ -65,9 +59,15 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         List<SoldItem> soldItems = RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().getSales(partner.getPlayer());
         int slotNumber = 45;
         for(SoldItem soldItem : soldItems) {
-            CustomItemStack customItemStack = soldItem.getItemStack();
-            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, "Verkauft am " + soldItem.getDate()));
-            inventory.setItem(slotNumber, customItemStack);
+            ItemStack itemStack = soldItem.getItemStack();
+
+//            CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
+//            if(customItemStack == null) {
+//                //TODO delete sold item
+//                continue;
+//            }
+//            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, "Verkauft am " + soldItem.getDate()));
+            inventory.setItem(slotNumber, itemStack);
 
             slotNumber++;
             if(slotNumber > 53) break;
@@ -97,8 +97,12 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         }
 
         // sell owned custom item
-        else if(event.getRawSlot() > 53 && CustomItemUtil.isCustomItem(event.getCurrentItem())) {
-            sell(RaidCraft.getCustomItem(event.getCurrentItem()), event.getSlot());
+//        else if(event.getRawSlot() > 53 && CustomItemUtil.isCustomItem(event.getCurrentItem())) {
+//            sell(RaidCraft.getCustomItem(event.getCurrentItem()), event.getSlot());
+//        }
+
+        else if(event.getRawSlot() > 53) {
+            sell(event.getCurrentItem(), event.getSlot());
         }
 
         event.setCancelled(true);

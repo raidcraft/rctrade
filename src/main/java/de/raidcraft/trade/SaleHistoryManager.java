@@ -1,7 +1,6 @@
 package de.raidcraft.trade;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.storage.ItemStorage;
 import de.raidcraft.api.storage.StorageException;
 import de.raidcraft.trade.api.SoldItem;
@@ -28,9 +27,9 @@ public class SaleHistoryManager {
         this.itemStorage = new ItemStorage("trade");
     }
 
-    public void addSale(CustomItemStack customItemStack, Player player) {
+    public void addSale(ItemStack itemStack, Player player) {
 
-        int storageId = itemStorage.storeObject(customItemStack);
+        int storageId = itemStorage.storeObject(itemStack);
 
         TSoldItem tSoldItem = new TSoldItem();
         tSoldItem.setPlayer(player.getName());
@@ -54,17 +53,11 @@ public class SaleHistoryManager {
                 RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
                 continue;
             }
-
-            CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
-            if(customItemStack == null) {
-                try {
-                    itemStorage.removeObject(tSoldItem.getStorageId());
-                } catch (StorageException e) {}
-                RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
-                continue;
+            if(itemStack == null) {
+                RaidCraft.LOGGER.info("DEBUG: ITEMSTACK IS NULL!");
             }
 
-            SoldItem soldItem = new SoldItem(player.getName(), customItemStack, tSoldItem.getId(), tSoldItem.getDate());
+            SoldItem soldItem = new SoldItem(player.getName(), itemStack, tSoldItem.getId(), tSoldItem.getDate());
             soldItems.add(soldItem);
         }
 

@@ -1,6 +1,6 @@
 package de.raidcraft.trade.api;
 
-import de.raidcraft.api.items.CustomItemStack;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
 
@@ -10,11 +10,11 @@ import java.sql.Timestamp;
 public class SoldItem {
 
     private String player;
-    private CustomItemStack itemStack;
+    private ItemStack itemStack;
     private int databaseId;
     private Timestamp date;
 
-    public SoldItem(String player, CustomItemStack itemStack, int databaseId, Timestamp date) {
+    public SoldItem(String player, ItemStack itemStack, int databaseId, Timestamp date) {
 
         this.player = player;
         this.itemStack = itemStack;
@@ -27,7 +27,7 @@ public class SoldItem {
         return player;
     }
 
-    public CustomItemStack getItemStack() {
+    public ItemStack getItemStack() {
 
         return itemStack;
     }
