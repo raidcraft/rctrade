@@ -1,4 +1,4 @@
-package de.raidcraft.trade.api;
+package de.raidcraft.trade.api.partner;
 
 /**
  * @author Philip Urban

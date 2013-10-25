@@ -2,6 +2,7 @@ package de.raidcraft.trade.api;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.trade.TradePlugin;
+import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -18,7 +19,13 @@ public class PlayerTradeWindow extends AbstractTradeWindow implements Listener {
 
     private static final Integer[] BLOCKED_SLOTS = {4, 13, 22, 31, 40, 49};
 
-    public PlayerTradeWindow(TradePartner leftPartner, TradePartner rightPartner) {
+    private PlayerTradePartner leftPartner;
+    private PlayerTradePartner rightPartner;
+
+    public PlayerTradeWindow(PlayerTradePartner leftPartner, PlayerTradePartner rightPartner) {
+
+        this.leftPartner = leftPartner;
+        this.rightPartner = rightPartner;
 
         inventory = Bukkit.createInventory(null, 54, "Spielerhandel");
         ItemStack separator = new ItemStack(Material.PUMPKIN_STEM);
@@ -36,7 +43,8 @@ public class PlayerTradeWindow extends AbstractTradeWindow implements Listener {
     @Override
     public void open() {
 
-
+        leftPartner.getPlayer().openInventory(inventory);
+        rightPartner.getPlayer().openInventory(inventory);
     }
 
     @EventHandler
@@ -44,9 +52,13 @@ public class PlayerTradeWindow extends AbstractTradeWindow implements Listener {
 
         if(!event.getInventory().equals(inventory)) return;
 
+        // cancel separator clicks
         if(Arrays.asList(BLOCKED_SLOTS).contains(event.getSlot())) {
             event.setCancelled(true);
             return;
         }
+
+        // register button clicks
+        //TODO
     }
 }
