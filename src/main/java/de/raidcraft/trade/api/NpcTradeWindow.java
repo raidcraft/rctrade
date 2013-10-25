@@ -91,6 +91,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 double price = customItemStack.getItem().getSellPrice() * itemStack.getAmount();
                 economy.substract(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Rückkauf von " + itemStack.getAmount() + "x" + customItemStack.getItem().getName());
                 //refresh history
+                RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().removeSale(soldItem.getDatabaseId());
                 refreshSaleHistory();
                 // give item
                 Inventory playerInventory = partner.getPlayer().getInventory();
