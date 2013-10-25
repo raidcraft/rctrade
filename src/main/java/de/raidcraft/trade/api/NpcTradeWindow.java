@@ -1,6 +1,8 @@
 package de.raidcraft.trade.api;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.economy.Economy;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import de.raidcraft.util.CustomItemUtil;
@@ -42,6 +44,16 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         RaidCraft.getComponent(TradePlugin.class).registerEvents(this);
     }
 
+    private void sell(CustomItemStack item) {
+
+        Economy economy = RaidCraft.getEconomy();
+        double price = item.getItem().getSellPrice();
+
+        item.setAmount(item.getAmount() - 1);
+        economy.add(partner.getPlayer().getName(), price);
+        //TODO add to sell history
+    }
+
     @Override
     public void open() {
 
@@ -65,10 +77,9 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
         // sell owned custom item
         else if(event.getRawSlot() > 53 && CustomItemUtil.isCustomItem(event.getCurrentItem())) {
-
+            sell(RaidCraft.getCustomItem(event.getCurrentItem()));
         }
 
-        RaidCraft.LOGGER.info("DEBUG: Clicked Slot: " + event.getRawSlot());
         event.setCancelled(true);
     }
 
@@ -78,6 +89,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         if(!event.getInventory().getViewers().contains(partner.getPlayer())) return;
 
         //XXX important to unregister all listener!!!
+        //TODO: add new implemented listeners!
         InventoryClickEvent.getHandlerList().unregister(this);
         InventoryCloseEvent.getHandlerList().unregister(this);
     }
