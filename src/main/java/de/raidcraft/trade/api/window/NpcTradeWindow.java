@@ -9,6 +9,7 @@ import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.SoldItem;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
+import de.raidcraft.trade.api.sales.CustomItemOffer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,6 +21,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +30,7 @@ import java.util.List;
 public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
     private PlayerTradePartner partner;
+    private List<CustomItemOffer> offerList = new ArrayList<>();
 
     public NpcTradeWindow(PlayerTradePartner partner) {
 
@@ -61,7 +64,8 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
         Economy economy = RaidCraft.getEconomy();
         double price = customItemStack.getItem().getSellPrice() * itemStack.getAmount();
-        economy.add(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Item " + itemStack.getAmount() + "x" + customItemStack.getItem().getName() + " verkauft");
+        economy.add(partner.getPlayer().getName(), price,
+                BalanceSource.TRADE, "Verkauf von " + itemStack.getAmount() + "x" + customItemStack.getItem().getName());
 
         partner.getPlayer().getInventory().setItem(slotNumber, new ItemStack(Material.AIR));
         partner.getPlayer().updateInventory();
@@ -80,7 +84,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
             if(currentSlot == rebuySlot) {
                 // check if player inventory has empty slot
                 if(partner.getPlayer().getInventory().firstEmpty() == -1) {
-                    partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast keinen freien Slot im Inventar für den Rückkauf!");
+                    partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast für den Rückkauf keinen freien Slot im Inventar!");
                     break;
                 }
                 // create custom item
@@ -93,7 +97,8 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 // take money
                 Economy economy = RaidCraft.getEconomy();
                 double price = customItemStack.getItem().getSellPrice() * itemStack.getAmount();
-                economy.substract(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Rückkauf von " + itemStack.getAmount() + "x" + customItemStack.getItem().getName());
+                economy.substract(partner.getPlayer().getName(), price,
+                        BalanceSource.TRADE, "Rückkauf von " + itemStack.getAmount() + "x" + customItemStack.getItem().getName());
                 //refresh history
                 RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().removeSale(soldItem.getDatabaseId());
                 refreshSaleHistory();
@@ -103,6 +108,34 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 break;
             }
             currentSlot++;
+        }
+    }
+
+    private void buy(int slotNumber) {
+
+        int slotCount = 0;
+        for(CustomItemOffer offer : offerList) {
+
+            if(slotCount == slotNumber) {
+                // check if player inventory has empty slot
+                if(partner.getPlayer().getInventory().firstEmpty() == -1) {
+                    partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast für den Kauf keinen freien Slot im Inventar!");
+                    break;
+                }
+                // take money
+                Economy economy = RaidCraft.getEconomy();
+                economy.substract(partner.getPlayer().getName(), offer.getPrice(),
+                        BalanceSource.TRADE, "Kauf von " + offer.getCustomItemStack().getAmount() + "x" + offer.getCustomItemStack().getItem().getName());
+                // give item
+                Inventory playerInventory = partner.getPlayer().getInventory();
+                playerInventory.setItem(playerInventory.firstEmpty(), offer.getCustomItemStack().clone());
+                break;
+            }
+
+            slotCount++;
+            if(slotCount > 35) {
+                break;
+            }
         }
     }
 
@@ -129,11 +162,36 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         }
     }
 
+    private void refreshOffers() {
+
+        int slotCount = 0;
+        for(CustomItemOffer offer : offerList) {
+
+            CustomItemStack displayItem = offer.getCustomItemStack().clone();
+            displayItem.setTooltip(new FixedMultilineTooltip(TooltipSlot.MISC,
+                    ChatColor.DARK_GRAY + "---------------------------------------",
+                    ChatColor.DARK_RED + "Kaufpreis: " + offer.getPriceString(),
+                    ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!"));
+            inventory.setItem(slotCount, displayItem);
+
+            slotCount++;
+            if(slotCount > 35) {
+                break;
+            }
+        }
+    }
+
+    public void addOffer(CustomItemOffer offer) {
+
+        offerList.add(offer);
+    }
+
     @Override
     public void open() {
 
         partner.getPlayer().openInventory(inventory);
         refreshSaleHistory();
+        refreshOffers();
     }
 
     @EventHandler
@@ -143,7 +201,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
         // buy item from npc
         if(event.getRawSlot() <= 35) {
-
+            buy(event.getSlot());
         }
 
         // undo last sell/buy
