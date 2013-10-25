@@ -54,12 +54,13 @@ public class SaleHistoryManager {
                 RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
                 continue;
             }
+            player.getWorld().dropItemNaturally(player.getLocation(), itemStack); //TODO remove
             CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
             if(customItemStack == null) {
                 try {
                     itemStorage.removeObject(tSoldItem.getStorageId());
                 } catch (StorageException e) {}
-//                RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
+                RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
                 continue;
             }
 
