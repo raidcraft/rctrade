@@ -20,15 +20,16 @@ public class SaleHistoryManager {
 
     private final static int PLAYER_HISTORY_SIZE = 9;
     private TradePlugin plugin;
+    private ItemStorage itemStorage;
 
     public SaleHistoryManager(TradePlugin plugin) {
 
         this.plugin = plugin;
+        this.itemStorage = new ItemStorage("trade");
     }
 
     public void addSale(CustomItemStack customItemStack, Player player) {
 
-        ItemStorage itemStorage = new ItemStorage("trade");
         int storageId = itemStorage.storeObject(customItemStack);
 
         TSoldItem tSoldItem = new TSoldItem();
@@ -45,7 +46,6 @@ public class SaleHistoryManager {
         List<SoldItem> soldItems = new ArrayList<>();
         List<TSoldItem> tSoldItems = RaidCraft.getDatabase(TradePlugin.class)
                 .find(TSoldItem.class).where().ieq("player", player.getName()).ieq("world", player.getWorld().getName()).findList();
-        ItemStorage itemStorage = new ItemStorage("trade");
         for(TSoldItem tSoldItem : tSoldItems) {
             ItemStack itemStack;
             try {
@@ -84,6 +84,9 @@ public class SaleHistoryManager {
         for(TSoldItem tSoldItem : tSoldItems) {
             i++;
             if(i > PLAYER_HISTORY_SIZE) {
+                try {
+                    itemStorage.removeObject(tSoldItem.getStorageId());
+                } catch (StorageException e) {}
                 RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
             }
         }
