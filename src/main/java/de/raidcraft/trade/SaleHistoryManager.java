@@ -44,7 +44,7 @@ public class SaleHistoryManager {
 
         List<SoldItem> soldItems = new ArrayList<>();
         List<TSoldItem> tSoldItems = RaidCraft.getDatabase(TradePlugin.class)
-                .find(TSoldItem.class).where().ieq("player", player.getName()).ieq("world", player.getWorld().getName()).findList();
+                .find(TSoldItem.class).where().ieq("player", player.getName()).ieq("world", player.getWorld().getName()).order().desc("id").findList();
         for(TSoldItem tSoldItem : tSoldItems) {
             ItemStack itemStack;
             try {
@@ -72,7 +72,7 @@ public class SaleHistoryManager {
     private void deleteOldSales(Player player) {
 
         List<TSoldItem> tSoldItems = RaidCraft.getDatabase(TradePlugin.class)
-                .find(TSoldItem.class).where().ieq("player", player.getName()).ieq("world", player.getWorld().getName()).findList();
+                .find(TSoldItem.class).where().ieq("player", player.getName()).ieq("world", player.getWorld().getName()).order().desc("id").findList();
         if(tSoldItems == null || tSoldItems.size() <= PLAYER_HISTORY_SIZE) return;
         int i = 0;
         for(TSoldItem tSoldItem : tSoldItems) {

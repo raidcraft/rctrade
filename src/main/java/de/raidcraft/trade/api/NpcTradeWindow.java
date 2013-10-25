@@ -49,7 +49,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 //        double price = itemStack.getItem().getSellPrice() * itemStack.getAmount();
 //
 //        economy.add(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Item " + itemStack.getAmount() + "x" + itemStack.getItem().getName() + " verkauft");
-        inventory.setItem(slotNumber, new ItemStack(Material.AIR));
+        partner.getPlayer().getInventory().setItem(slotNumber, new ItemStack(Material.AIR));
         RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().addSale(itemStack, partner.getPlayer());
         refreshSaleHistory();
     }
@@ -79,6 +79,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
     public void open() {
 
         partner.getPlayer().openInventory(inventory);
+        refreshSaleHistory();
     }
 
     @EventHandler
