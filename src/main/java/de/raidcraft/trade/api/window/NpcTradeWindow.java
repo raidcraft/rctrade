@@ -175,7 +175,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
             CustomItemStack displayItem = offer.getCustomItemStack().clone();
             displayItem.setTooltip(new FixedMultilineTooltip(TooltipSlot.MISC,
-                    ChatColor.DARK_GRAY + "---------------------------------------",
+                    ChatColor.DARK_GRAY + "-----------------------------",
                     ChatColor.DARK_RED + "Kaufpreis: " + offer.getPriceString(),
                     ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!"));
             displayItem.rebuild();
