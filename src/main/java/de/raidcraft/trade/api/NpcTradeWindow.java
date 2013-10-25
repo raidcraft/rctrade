@@ -1,6 +1,7 @@
 package de.raidcraft.trade.api;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.trade.TradePlugin;
@@ -44,13 +45,18 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         RaidCraft.getComponent(TradePlugin.class).registerEvents(this);
     }
 
-    private void sell(CustomItemStack item) {
+    private void sell(CustomItemStack item, int slotNumber) {
 
         Economy economy = RaidCraft.getEconomy();
         double price = item.getItem().getSellPrice();
 
-        item.setAmount(item.getAmount() - 1);
-        economy.add(partner.getPlayer().getName(), price);
+        if(item.getAmount() > 1) {
+            item.setAmount(item.getAmount() - 1);
+        }
+        else {
+            inventory.setItem(slotNumber, null);
+        }
+        economy.add(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Item '" + item.getItem().getName() + "' verkauft");
         //TODO add to sell history
     }
 
@@ -77,7 +83,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
         // sell owned custom item
         else if(event.getRawSlot() > 53 && CustomItemUtil.isCustomItem(event.getCurrentItem())) {
-            sell(RaidCraft.getCustomItem(event.getCurrentItem()));
+            sell(RaidCraft.getCustomItem(event.getCurrentItem()), event.getRawSlot());
         }
 
         event.setCancelled(true);
