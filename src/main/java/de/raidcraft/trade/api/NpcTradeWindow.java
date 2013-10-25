@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -65,13 +66,47 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         refreshSaleHistory();
     }
 
+    private void rebuy(int slotNumber) {
+
+        int rebuySlot = slotNumber - 45;
+
+        int currentSlot = 0;
+        List<SoldItem> soldItems = RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().getSales(partner.getPlayer());
+        for(SoldItem soldItem : soldItems) {
+            if(currentSlot == rebuySlot) {
+                // check if player inventory has empty slot
+                if(partner.getPlayer().getInventory().firstEmpty() == -1) {
+                    partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast keinen freien Slot im Inventar für den Rückkauf!");
+                    break;
+                }
+                // create custom item
+                ItemStack itemStack = soldItem.getItemStack();
+                CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
+                if(customItemStack == null) {
+                    RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().removeSale(soldItem.getDatabaseId());
+                    continue;
+                }
+                // take money
+                Economy economy = RaidCraft.getEconomy();
+                double price = customItemStack.getItem().getSellPrice() * itemStack.getAmount();
+                economy.substract(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Rückkauf von " + itemStack.getAmount() + "x" + customItemStack.getItem().getName());
+                //refresh history
+                refreshSaleHistory();
+                // give item
+                Inventory playerInventory = partner.getPlayer().getInventory();
+                playerInventory.setItem(playerInventory.firstEmpty(), customItemStack);
+                break;
+            }
+            currentSlot++;
+        }
+    }
+
     private void refreshSaleHistory() {
 
         List<SoldItem> soldItems = RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().getSales(partner.getPlayer());
         int slotNumber = 45;
         for(SoldItem soldItem : soldItems) {
             ItemStack itemStack = soldItem.getItemStack();
-
             CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
             if(customItemStack == null) {
                 RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().removeSale(soldItem.getDatabaseId());
@@ -105,7 +140,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
         // undo last sell/buy
         else if(event.getRawSlot() > 44 && event.getRawSlot() < 54) {
-
+            rebuy(event.getSlot());
         }
 
         else if(event.getRawSlot() > 53 && event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR) {
