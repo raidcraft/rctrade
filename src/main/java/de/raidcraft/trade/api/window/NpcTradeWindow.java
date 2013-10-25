@@ -64,6 +64,12 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
         Economy economy = RaidCraft.getEconomy();
         double price = customItemStack.getItem().getSellPrice() * itemStack.getAmount();
+
+        if(price == 0) {
+            partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Dieses Item ist nichts Wert!");
+            return;
+        }
+
         economy.add(partner.getPlayer().getName(), price,
                 BalanceSource.TRADE, "Verkauf von " + itemStack.getAmount() + "x" + customItemStack.getItem().getName());
 
