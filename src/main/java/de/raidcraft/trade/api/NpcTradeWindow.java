@@ -4,6 +4,8 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.tooltip.SingleLineTooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import de.raidcraft.util.CustomItemUtil;
@@ -15,6 +17,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 /**
  * @author Philip Urban
@@ -32,32 +36,44 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         ItemMeta itemMeta = separator.getItemMeta();
         itemMeta.setDisplayName("~");
         separator.setItemMeta(itemMeta);
-        inventory.setItem(27, separator);
-        inventory.setItem(28, separator.clone());
-        inventory.setItem(29, separator.clone());
-        inventory.setItem(30, separator.clone());
-        inventory.setItem(31, separator.clone());
-        inventory.setItem(32, separator.clone());
-        inventory.setItem(33, separator.clone());
-        inventory.setItem(34, separator.clone());
-        inventory.setItem(35, separator.clone());
+        inventory.setItem(36, separator);
+        inventory.setItem(37, separator.clone());
+        inventory.setItem(38, separator.clone());
+        inventory.setItem(39, separator.clone());
+        inventory.setItem(40, separator.clone());
+        inventory.setItem(41, separator.clone());
+        inventory.setItem(42, separator.clone());
+        inventory.setItem(43, separator.clone());
+        inventory.setItem(44, separator.clone());
 
         RaidCraft.getComponent(TradePlugin.class).registerEvents(this);
     }
 
-    private void sell(CustomItemStack item, int slotNumber) {
+    private void sell(CustomItemStack customItemStack, int slotNumber) {
 
         Economy economy = RaidCraft.getEconomy();
-        double price = item.getItem().getSellPrice();
+        double price = customItemStack.getItem().getSellPrice();
 
-        if(item.getAmount() > 1) {
-            item.setAmount(item.getAmount() - 1);
+        inventory.setItem(slotNumber, null);
+        economy.add(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Item " + customItemStack.getAmount() + "x" + customItemStack.getItem().getName() + " verkauft");
+        RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().addSale(customItemStack, partner.getPlayer());
+        refreshSaleHistory();
+    }
+
+    private void refreshSaleHistory() {
+
+        List<SoldItem> soldItems = RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().getSales(partner.getPlayer());
+        int slotNumber = 45;
+        for(SoldItem soldItem : soldItems) {
+            CustomItemStack customItemStack = soldItem.getItemStack();
+            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, "Verkauft am " + soldItem.getDate()));
+            inventory.setItem(slotNumber, customItemStack);
+
+            slotNumber++;
+            if(slotNumber > 53) break;
         }
-        else {
-            inventory.setItem(slotNumber, null);
-        }
-        economy.add(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Item '" + item.getItem().getName() + "' verkauft");
-        //TODO add to sell history
+
+        partner.getPlayer().updateInventory();
     }
 
     @Override
@@ -72,12 +88,12 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         if(!event.getInventory().getViewers().contains(partner.getPlayer())) return;
 
         // buy item from npc
-        if(event.getRawSlot() <= 27) {
+        if(event.getRawSlot() <= 35) {
 
         }
 
         // undo last sell/buy
-        else if(event.getRawSlot() > 35 && event.getRawSlot() < 54) {
+        else if(event.getRawSlot() > 44 && event.getRawSlot() < 54) {
 
         }
 
