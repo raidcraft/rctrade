@@ -47,7 +47,9 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
 
-        if(!event.getInventory().equals(inventory)) return;
+        RaidCraft.LOGGER.info("inventory click");
+
+        if(!event.getInventory().getViewers().contains(partner.getPlayer())) return;
 
         // buy item from npc
         if(event.getSlot() <= 27) {
