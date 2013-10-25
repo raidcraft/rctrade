@@ -1,7 +1,10 @@
 package de.raidcraft.trade.commands;
 
 import com.sk89q.minecraft.util.commands.*;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.trade.TradePlugin;
+import de.raidcraft.trade.api.sales.SimpleCustomItemOffer;
 import de.raidcraft.trade.api.window.NpcTradeWindow;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import de.raidcraft.trade.api.partner.SimplePlayerTradePartner;
@@ -59,6 +62,15 @@ public class TradeCommands {
             Player player = (Player)sender;
             PlayerTradePartner playerTradePartner = new SimplePlayerTradePartner(player);
             NpcTradeWindow tradeWindow = new NpcTradeWindow(playerTradePartner);
+            try {
+                tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(43)));
+                tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(816)));
+                tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(768)));
+                tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(864)));
+                tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(1196)));
+            } catch (CustomItemException e) {
+                RaidCraft.LOGGER.info(e.getMessage());
+            }
             tradeWindow.open();
         }
     }
