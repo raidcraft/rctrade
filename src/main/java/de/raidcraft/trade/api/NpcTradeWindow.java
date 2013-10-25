@@ -120,8 +120,9 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().removeSale(soldItem.getDatabaseId());
                 continue;
             }
-            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, ChatColor.DARK_PURPLE + "Verkauft am " + soldItem.getDate()));
-            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, ChatColor.LIGHT_PURPLE + "Klicken um Verkauf rückgängig zu machen!"));
+            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.ATTRIBUTES, ChatColor.DARK_PURPLE + "Verkauft am " + soldItem.getDate()));
+            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.ATTRIBUTES, ChatColor.LIGHT_PURPLE + "Klicken um Verkauf rückgängig zu machen!"));
+            customItemStack.rebuild();
             inventory.setItem(i, customItemStack);
         }
     }
