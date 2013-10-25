@@ -1,6 +1,8 @@
-name: RCTrade
 main: de.raidcraft.trade.TradePlugin
-version: ${project.version}#${build.number}
-author: Silthus
-website: www.raid-craft.de
+name: RCTrade
+version: ${project.version}#${BUILDS_ALL_TIME}
+description: Provideds player and npc trades.
+author: Strasse36
+website: http://www.raid-craft.de
+depend: [RaidCraft-API]
 database: true

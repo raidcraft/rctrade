@@ -22,7 +22,7 @@ public class TradeCommands {
 
     @Command(
             aliases = {"trade"},
-            desc = "Resident commands"
+            desc = "Trade commands"
     )
     @NestedCommand(value = NestedCommands.class)
     public void trade(CommandContext args, CommandSender sender) throws CommandException {
