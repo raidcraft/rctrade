@@ -83,7 +83,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
         // sell owned custom item
         else if(event.getRawSlot() > 53 && CustomItemUtil.isCustomItem(event.getCurrentItem())) {
-            sell(RaidCraft.getCustomItem(event.getCurrentItem()), event.getRawSlot());
+            sell(RaidCraft.getCustomItem(event.getCurrentItem()), event.getSlot());
         }
 
         event.setCancelled(true);
