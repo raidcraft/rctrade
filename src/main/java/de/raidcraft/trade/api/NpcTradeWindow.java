@@ -53,7 +53,10 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
     private void sell(ItemStack itemStack, int slotNumber) {
 
         CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
-        if(customItemStack == null) return;
+        if(customItemStack == null) {
+            partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Es können nur Sepzial-Items verkauft werden!");
+            return;
+        }
 
         Economy economy = RaidCraft.getEconomy();
         double price = customItemStack.getItem().getSellPrice() * itemStack.getAmount();
