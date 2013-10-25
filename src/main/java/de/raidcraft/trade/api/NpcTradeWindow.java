@@ -4,6 +4,8 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
 import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.tooltip.SingleLineTooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import de.raidcraft.util.CustomItemUtil;
@@ -15,6 +17,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 /**
  * @author Philip Urban
@@ -58,16 +62,16 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
     private void refreshSaleHistory() {
 
-//        List<SoldItem> soldItems = RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().getSales(partner.getPlayer());
-//        int slotNumber = 45;
-//        for(SoldItem soldItem : soldItems) {
-//            CustomItemStack customItemStack = soldItem.getItemStack();
-//            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, "Verkauft am " + soldItem.getDate()));
-//            inventory.setItem(slotNumber, customItemStack);
-//
-//            slotNumber++;
-//            if(slotNumber > 53) break;
-//        }
+        List<SoldItem> soldItems = RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().getSales(partner.getPlayer());
+        int slotNumber = 45;
+        for(SoldItem soldItem : soldItems) {
+            CustomItemStack customItemStack = soldItem.getItemStack();
+            customItemStack.setTooltip(new SingleLineTooltip(TooltipSlot.NAME, "Verkauft am " + soldItem.getDate()));
+            inventory.setItem(slotNumber, customItemStack);
+
+            slotNumber++;
+            if(slotNumber > 53) break;
+        }
         partner.getPlayer().updateInventory();
     }
 
