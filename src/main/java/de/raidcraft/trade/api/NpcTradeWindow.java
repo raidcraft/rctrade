@@ -1,6 +1,9 @@
 package de.raidcraft.trade.api;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.economy.BalanceSource;
+import de.raidcraft.api.economy.Economy;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import org.bukkit.Bukkit;
@@ -45,11 +48,16 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
     private void sell(ItemStack itemStack, int slotNumber) {
 
-//        Economy economy = RaidCraft.getEconomy();
-//        double price = itemStack.getItem().getSellPrice() * itemStack.getAmount();
-//
-//        economy.add(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Item " + itemStack.getAmount() + "x" + itemStack.getItem().getName() + " verkauft");
+        CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
+        if(customItemStack == null) return;
+
+        Economy economy = RaidCraft.getEconomy();
+        double price = customItemStack.getItem().getSellPrice() * itemStack.getAmount();
+        economy.add(partner.getPlayer().getName(), price, BalanceSource.TRADE, "Item " + itemStack.getAmount() + "x" + customItemStack.getItem().getName() + " verkauft");
+
         partner.getPlayer().getInventory().setItem(slotNumber, new ItemStack(Material.AIR));
+        partner.getPlayer().updateInventory();
+
         RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().addSale(itemStack, partner.getPlayer());
         refreshSaleHistory();
     }
@@ -72,7 +80,6 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
             slotNumber++;
             if(slotNumber > 53) break;
         }
-        partner.getPlayer().updateInventory();
     }
 
     @Override
@@ -96,11 +103,6 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         else if(event.getRawSlot() > 44 && event.getRawSlot() < 54) {
 
         }
-
-        // sell owned custom item
-//        else if(event.getRawSlot() > 53 && CustomItemUtil.isCustomItem(event.getCurrentItem())) {
-//            sell(RaidCraft.getCustomItem(event.getCurrentItem()), event.getSlot());
-//        }
 
         else if(event.getRawSlot() > 53 && event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR) {
             sell(event.getCurrentItem(), event.getSlot());
