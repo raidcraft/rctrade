@@ -51,7 +51,6 @@ public class SaleHistoryManager {
             try {
                 itemStack = itemStorage.getObject(tSoldItem.getStorageId());
             } catch (StorageException e) {
-                RaidCraft.LOGGER.info("DEBUG 0");
                 RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
                 continue;
             }
@@ -60,8 +59,7 @@ public class SaleHistoryManager {
                 try {
                     itemStorage.removeObject(tSoldItem.getStorageId());
                 } catch (StorageException e) {}
-                RaidCraft.LOGGER.info("DEBUG 1");
-                RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
+//                RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
                 continue;
             }
 
