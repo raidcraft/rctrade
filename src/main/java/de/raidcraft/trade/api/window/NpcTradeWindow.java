@@ -8,10 +8,10 @@ import de.raidcraft.api.items.tooltip.FixedMultilineTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.SoldItem;
+import de.raidcraft.trade.api.offers.TradeSet;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import de.raidcraft.trade.api.offers.CustomItemOffer;
 import de.raidcraft.trade.api.offers.Offer;
-import de.raidcraft.trade.api.offers.OfferSet;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,9 +32,9 @@ import java.util.List;
 public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
     private PlayerTradePartner partner;
-    private OfferSet offerSet;
+    private TradeSet offerSet;
 
-    public NpcTradeWindow(PlayerTradePartner partner, OfferSet offerSet) {
+    public NpcTradeWindow(PlayerTradePartner partner, TradeSet offerSet) {
 
         this.partner = partner;
         this.offerSet = offerSet;

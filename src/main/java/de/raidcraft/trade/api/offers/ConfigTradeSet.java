@@ -9,9 +9,9 @@ import org.bukkit.inventory.ItemStack;
 /**
  * @author Philip Urban
  */
-public class ConfigOfferSet extends SimpleOfferSet {
+public class ConfigTradeSet extends SimpleTradeSet {
 
-    public ConfigOfferSet(String name, ConfigurationSection config) {
+    public ConfigTradeSet(String name, ConfigurationSection config) {
 
         super(name);
 

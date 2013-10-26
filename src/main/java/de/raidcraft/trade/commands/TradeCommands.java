@@ -1,13 +1,11 @@
 package de.raidcraft.trade.commands;
 
 import com.sk89q.minecraft.util.commands.*;
-import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.trade.TradePlugin;
-import de.raidcraft.trade.api.offers.SimpleCustomItemOffer;
-import de.raidcraft.trade.api.window.NpcTradeWindow;
+import de.raidcraft.trade.api.offers.TradeSet;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import de.raidcraft.trade.api.partner.SimplePlayerTradePartner;
+import de.raidcraft.trade.api.window.NpcTradeWindow;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -53,24 +51,21 @@ public class TradeCommands {
         }
 
         @Command(
-                aliases = {"test"},
-                desc = "Test command"
+                aliases = {"open"},
+                desc = "Opens an existing configured trade",
+                min = 1,
+                usage = "<Trade Set>"
         )
-        @CommandPermissions("rctrade.cmd.test")
+        @CommandPermissions("rctrade.cmd.open")
         public void info(CommandContext args, CommandSender sender) throws CommandException {
 
             Player player = (Player)sender;
             PlayerTradePartner playerTradePartner = new SimplePlayerTradePartner(player);
-            NpcTradeWindow tradeWindow = new NpcTradeWindow(playerTradePartner);
-            try {
-                tradeWindow.addOffer(new SimpleCustomItemOffer(123.42, RaidCraft.getCustomItemStack(43)));
-                tradeWindow.addOffer(new SimpleCustomItemOffer(0.42, RaidCraft.getCustomItemStack(816)));
-                tradeWindow.addOffer(new SimpleCustomItemOffer(13.42, RaidCraft.getCustomItemStack(768)));
-                tradeWindow.addOffer(new SimpleCustomItemOffer(46.00, RaidCraft.getCustomItemStack(864)));
-                tradeWindow.addOffer(new SimpleCustomItemOffer(2.00, RaidCraft.getCustomItemStack(1196)));
-            } catch (CustomItemException e) {
-                RaidCraft.LOGGER.info("RCTRade: " + e.getMessage());
+            TradeSet tradeSet = plugin.getTradeConfigManager().getTradeSet(args.getString(0));
+            if(tradeSet == null) {
+                throw new CommandException("Es gibt kein Trade-Set mit diesem Name!");
             }
+            NpcTradeWindow tradeWindow = new NpcTradeWindow(playerTradePartner, tradeSet);
             tradeWindow.open();
         }
     }

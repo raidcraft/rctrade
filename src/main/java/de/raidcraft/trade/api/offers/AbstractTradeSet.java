@@ -3,11 +3,11 @@ package de.raidcraft.trade.api.offers;
 /**
  * @author Philip Urban
  */
-public abstract class AbstractOfferSet implements OfferSet {
+public abstract class AbstractTradeSet implements TradeSet {
 
     private String name;
 
-    protected AbstractOfferSet(String name) {
+    protected AbstractTradeSet(String name) {
 
         this.name = name;
     }

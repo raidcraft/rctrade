@@ -6,11 +6,11 @@ import java.util.List;
 /**
  * @author Philip Urban
  */
-public class SimpleOfferSet extends AbstractOfferSet {
+public class SimpleTradeSet extends AbstractTradeSet {
 
     private List<Offer> offers = new ArrayList<>();
 
-    public SimpleOfferSet(String name) {
+    public SimpleTradeSet(String name) {
 
         super(name);
     }

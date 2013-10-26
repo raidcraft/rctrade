@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @author Philip Urban
  */
-public interface OfferSet {
+public interface TradeSet {
 
     public String getName();
 

@@ -13,6 +13,7 @@ import java.util.List;
 public class TradePlugin extends BasePlugin {
 
     private SaleHistoryManager saleHistoryManager;
+    private TradesManager tradeConfigManager;
 
     @Override
     public void enable() {
@@ -20,6 +21,7 @@ public class TradePlugin extends BasePlugin {
         registerCommands(TradeCommands.class);
 
         saleHistoryManager = new SaleHistoryManager(this);
+        tradeConfigManager = new TradesManager(this);
     }
 
     @Override
@@ -37,5 +39,10 @@ public class TradePlugin extends BasePlugin {
     public SaleHistoryManager getSaleHistoryManager() {
 
         return saleHistoryManager;
+    }
+
+    public TradesManager getTradeConfigManager() {
+
+        return tradeConfigManager;
     }
 }
