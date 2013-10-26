@@ -8,10 +8,11 @@ import de.raidcraft.api.items.tooltip.FixedMultilineTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.SoldItem;
-import de.raidcraft.trade.api.offers.TradeSet;
-import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import de.raidcraft.trade.api.offers.CustomItemOffer;
 import de.raidcraft.trade.api.offers.Offer;
+import de.raidcraft.trade.api.offers.TradeSet;
+import de.raidcraft.trade.api.partner.PlayerTradePartner;
+import de.raidcraft.util.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -144,8 +145,15 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                     return;
                 }
                 // take money
+                String itemName;
+                if(offer instanceof CustomItemOffer) {
+                    itemName = ((CustomItemOffer) offer).getCustomItemStack().getItem().getName();
+                }
+                else {
+                    itemName = ItemUtils.getFriendlyName(offer.getItemStack().getType());
+                }
                 economy.substract(partner.getPlayer().getName(), offer.getPrice(),
-                        BalanceSource.TRADE, "Kauf von " + offer.getItemStack().getAmount() + "x" + offer.getItemStack().getItemMeta().getDisplayName());
+                        BalanceSource.TRADE, "Kauf von " + offer.getItemStack().getAmount() + "x" + itemName);
                 // give item
                 Inventory playerInventory = partner.getPlayer().getInventory();
                 playerInventory.setItem(playerInventory.firstEmpty(), offer.getItemStack().clone());
