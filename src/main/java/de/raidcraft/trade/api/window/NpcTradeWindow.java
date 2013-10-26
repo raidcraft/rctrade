@@ -10,6 +10,8 @@ import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.SoldItem;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import de.raidcraft.trade.api.sales.CustomItemOffer;
+import de.raidcraft.trade.api.sales.Offer;
+import de.raidcraft.trade.api.sales.OfferSet;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -30,11 +32,12 @@ import java.util.List;
 public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
     private PlayerTradePartner partner;
-    private List<CustomItemOffer> offerList = new ArrayList<>();
+    private OfferSet offerSet;
 
-    public NpcTradeWindow(PlayerTradePartner partner) {
+    public NpcTradeWindow(PlayerTradePartner partner, OfferSet offerSet) {
 
         this.partner = partner;
+        this.offerSet = offerSet;
 
         inventory = Bukkit.createInventory(null, 54, "Händler");
         ItemStack separator = new ItemStack(Material.PUMPKIN_STEM);
@@ -131,7 +134,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         }
 
         int slotCount = 0;
-        for(CustomItemOffer offer : offerList) {
+        for(Offer offer : offerSet.getOffers()) {
 
             if(slotCount == slotNumber) {
                 Economy economy = RaidCraft.getEconomy();
@@ -142,10 +145,10 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 }
                 // take money
                 economy.substract(partner.getPlayer().getName(), offer.getPrice(),
-                        BalanceSource.TRADE, "Kauf von " + offer.getCustomItemStack().getAmount() + "x" + offer.getCustomItemStack().getItem().getName());
+                        BalanceSource.TRADE, "Kauf von " + offer.getItemStack().getAmount() + "x" + offer.getItemStack().getItemMeta().getDisplayName());
                 // give item
                 Inventory playerInventory = partner.getPlayer().getInventory();
-                playerInventory.setItem(playerInventory.firstEmpty(), offer.getCustomItemStack().clone());
+                playerInventory.setItem(playerInventory.firstEmpty(), offer.getItemStack().clone());
                 break;
             }
 
@@ -183,26 +186,34 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
     private void refreshOffers() {
 
         int slotCount = 0;
-        for(CustomItemOffer offer : offerList) {
+        for(Offer offer : offerSet.getOffers()) {
 
-            CustomItemStack displayItem = offer.getCustomItemStack().clone();
-            displayItem.setTooltip(new FixedMultilineTooltip(TooltipSlot.MISC,
-                    ChatColor.DARK_GRAY + "--------------------------",
-                    ChatColor.DARK_PURPLE + "Kaufpreis: " + offer.getPriceString(),
-                    ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!"));
-            displayItem.rebuild();
-            inventory.setItem(slotCount, displayItem);
+            if(offer instanceof CustomItemOffer) {
+                CustomItemStack displayItem = ((CustomItemOffer)offer).getCustomItemStack().clone();
+                displayItem.setTooltip(new FixedMultilineTooltip(TooltipSlot.MISC,
+                        ChatColor.DARK_GRAY + "--------------------------",
+                        ChatColor.DARK_PURPLE + "Kaufpreis: " + offer.getPriceString(),
+                        ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!"));
+                displayItem.rebuild();
+                inventory.setItem(slotCount, displayItem);
+            }
+            else {
+                ItemStack displayItem = offer.getItemStack().clone();
+                ItemMeta itemMeta = displayItem.getItemMeta();
+                List<String> lore = new ArrayList<>();
+                lore.add(ChatColor.DARK_GRAY + "--------------------------");
+                lore.add(ChatColor.DARK_PURPLE + "Kaufpreis: " + offer.getPriceString());
+                lore.add(ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!");
+                itemMeta.setLore(lore);
+                displayItem.setItemMeta(itemMeta);
+                inventory.setItem(slotCount, displayItem);
+            }
 
             slotCount++;
             if(slotCount > 35) {
                 break;
             }
         }
-    }
-
-    public void addOffer(CustomItemOffer offer) {
-
-        offerList.add(offer);
     }
 
     @Override
