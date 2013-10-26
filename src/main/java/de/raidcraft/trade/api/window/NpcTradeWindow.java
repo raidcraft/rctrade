@@ -82,17 +82,17 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
     private void rebuy(int slotNumber) {
 
-        int rebuySlot = slotNumber - 45;
+        // check if player inventory has empty slot
+        if(partner.getPlayer().getInventory().firstEmpty() == -1) {
+            partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast für den Rückkauf keinen freien Slot im Inventar!");
+            return;
+        }
 
+        int rebuySlot = slotNumber - 45;
         int currentSlot = 0;
         List<SoldItem> soldItems = RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().getSales(partner.getPlayer());
         for(SoldItem soldItem : soldItems) {
             if(currentSlot == rebuySlot) {
-                // check if player inventory has empty slot
-                if(partner.getPlayer().getInventory().firstEmpty() == -1) {
-                    partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast für den Rückkauf keinen freien Slot im Inventar!");
-                    break;
-                }
                 // create custom item
                 ItemStack itemStack = soldItem.getItemStack();
                 CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
@@ -100,9 +100,14 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                     RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().removeSale(soldItem.getDatabaseId());
                     continue;
                 }
-                // take money
                 Economy economy = RaidCraft.getEconomy();
                 double price = customItemStack.getItem().getSellPrice() * itemStack.getAmount();
+                // check money
+                if(!economy.hasEnough(partner.getPlayer().getName(), price)) {
+                    partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast nicht genügend Geld auf dem Konto!");
+                    return;
+                }
+                // take money
                 economy.substract(partner.getPlayer().getName(), price,
                         BalanceSource.TRADE, "Rückkauf von " + itemStack.getAmount() + "x" + customItemStack.getItem().getName());
                 //refresh history
@@ -119,17 +124,23 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
     private void buy(int slotNumber) {
 
+        // check if player inventory has empty slot
+        if(partner.getPlayer().getInventory().firstEmpty() == -1) {
+            partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast für den Kauf keinen freien Slot im Inventar!");
+            return;
+        }
+
         int slotCount = 0;
         for(CustomItemOffer offer : offerList) {
 
             if(slotCount == slotNumber) {
-                // check if player inventory has empty slot
-                if(partner.getPlayer().getInventory().firstEmpty() == -1) {
-                    partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast für den Kauf keinen freien Slot im Inventar!");
-                    break;
+                Economy economy = RaidCraft.getEconomy();
+                // check money
+                if(!economy.hasEnough(partner.getPlayer().getName(), offer.getPrice())) {
+                    partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast nicht genügend Geld auf dem Konto!");
+                    return;
                 }
                 // take money
-                Economy economy = RaidCraft.getEconomy();
                 economy.substract(partner.getPlayer().getName(), offer.getPrice(),
                         BalanceSource.TRADE, "Kauf von " + offer.getCustomItemStack().getAmount() + "x" + offer.getCustomItemStack().getItem().getName());
                 // give item
@@ -161,6 +172,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 continue;
             }
             customItemStack.setTooltip(new FixedMultilineTooltip(TooltipSlot.MISC,
+                    ChatColor.DARK_GRAY + "--------------------------",
                     ChatColor.DARK_PURPLE + "Verkauft am " + soldItem.getDate(),
                     ChatColor.LIGHT_PURPLE + "Klicken um Verkauf rückgängig zu machen!"));
             customItemStack.rebuild();
@@ -175,8 +187,8 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
             CustomItemStack displayItem = offer.getCustomItemStack().clone();
             displayItem.setTooltip(new FixedMultilineTooltip(TooltipSlot.MISC,
-                    ChatColor.DARK_GRAY + "-----------------------------",
-                    ChatColor.DARK_RED + "Kaufpreis: " + offer.getPriceString(),
+                    ChatColor.DARK_GRAY + "--------------------------",
+                    ChatColor.DARK_PURPLE + "Kaufpreis: " + offer.getPriceString(),
                     ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!"));
             displayItem.rebuild();
             inventory.setItem(slotCount, displayItem);
