@@ -25,6 +25,11 @@ public class TradesManager {
         load();
     }
 
+    public void reload() {
+
+        load();
+    }
+
     private void load() {
 
         loadConversations(DEFAULT_CONFIG_DIR);

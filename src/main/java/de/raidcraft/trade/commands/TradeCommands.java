@@ -47,6 +47,7 @@ public class TradeCommands {
         public void reload(CommandContext args, CommandSender sender) throws CommandException {
 
             plugin.reload();
+            plugin.getTradesManager().reload();
             sender.sendMessage(ChatColor.GREEN + "RCTrade wurde neugeladen!");
         }
 
