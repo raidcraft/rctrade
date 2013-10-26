@@ -5,7 +5,7 @@ import de.raidcraft.api.items.CustomItemStack;
 /**
  * @author Philip Urban
  */
-public class SimpleCustomItemOffer extends AbstractOffer implements CustomItemOffer {
+public class SimpleCustomItemOffer extends SimpleOffer implements CustomItemOffer {
 
     private CustomItemStack customItemStack;
 

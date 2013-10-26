@@ -6,12 +6,12 @@ import org.bukkit.inventory.ItemStack;
 /**
  * @author Philip Urban
  */
-public abstract class AbstractOffer implements Offer {
+public class SimpleOffer implements Offer {
 
     private double price;
     private ItemStack itemStack;
 
-    protected AbstractOffer(double price, ItemStack itemStack) {
+    protected SimpleOffer(double price, ItemStack itemStack) {
 
         this.price = price;
         this.itemStack = itemStack;

@@ -1,6 +1,10 @@
 package de.raidcraft.trade.api.offers;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItemException;
+import de.raidcraft.api.items.CustomItemStack;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Philip Urban
@@ -14,9 +18,36 @@ public class ConfigOfferSet extends SimpleOfferSet {
         ConfigurationSection offersSection = config.getConfigurationSection("offers");
         if(offersSection == null) return;
         for(String key : offersSection.getKeys(false)) {
-            ConfigurationSection
-        }
+            ConfigurationSection offerSection = offersSection.getConfigurationSection(key);
+            String itemIdentifier = offerSection.getString("item");
+            double price = config.getDouble("price");
+            // custom-item
+            if(itemIdentifier.startsWith("rci")) {
+                CustomItemStack customItemStack;
+                try {
+                    int customItemId = Integer.valueOf(itemIdentifier.substring(3));
+                    customItemStack = RaidCraft.getCustomItemStack(customItemId);
+                } catch (NumberFormatException | CustomItemException e) {
 
-        //TODO check if price is higher or equal sell price!
+                    RaidCraft.LOGGER.warning("[RCTrade] Fehler in Trade Config '" + name + "'. Es gibt kein Custom-Item mit der ID:" + itemIdentifier.substring(3));
+                    continue;
+                }
+                if(price < customItemStack.getItem().getSellPrice() * customItemStack.getAmount()) {
+                    RaidCraft.LOGGER.warning("[RCTrade] Fehler in Trade Config '" + name + "'. Der Preis ist niedriger als der Item-Verkaufspreis (Item:" + customItemStack.getItem().getId() + ")");
+                    continue;
+                }
+                addOffer(new SimpleCustomItemOffer(price, customItemStack));
+                continue;
+            }
+            // vanilla-item
+            else {
+                ItemStack itemStack = RaidCraft.getUnsafeItem(itemIdentifier);
+                if(itemStack == null) {
+                    RaidCraft.LOGGER.warning("[RCTrade] Fehler in Trade Config '" + name + "'. Es gibt kein Vanilla-Item mit der ID:" + itemIdentifier);
+                    continue;
+                }
+                addOffer(new SimpleOffer(price, itemStack));
+            }
+        }
     }
 }
