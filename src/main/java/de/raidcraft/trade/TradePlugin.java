@@ -1,5 +1,6 @@
 package de.raidcraft.trade;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.trade.commands.TradeCommands;
 import de.raidcraft.trade.tables.TSoldItem;
@@ -14,6 +15,7 @@ public class TradePlugin extends BasePlugin {
 
     private SaleHistoryManager saleHistoryManager;
     private TradesManager tradeConfigManager;
+    private TradeProviderImpl tradeProvider;
 
     @Override
     public void enable() {
@@ -22,6 +24,9 @@ public class TradePlugin extends BasePlugin {
 
         saleHistoryManager = new SaleHistoryManager(this);
         tradeConfigManager = new TradesManager(this);
+        tradeProvider = new TradeProviderImpl(this);
+
+        RaidCraft.setupTradeProvider(tradeProvider);
     }
 
     @Override
