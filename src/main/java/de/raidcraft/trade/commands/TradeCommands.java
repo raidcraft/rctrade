@@ -4,7 +4,7 @@ import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.trade.TradePlugin;
-import de.raidcraft.trade.api.sales.SimpleCustomItemOffer;
+import de.raidcraft.trade.api.offers.SimpleCustomItemOffer;
 import de.raidcraft.trade.api.window.NpcTradeWindow;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
 import de.raidcraft.trade.api.partner.SimplePlayerTradePartner;

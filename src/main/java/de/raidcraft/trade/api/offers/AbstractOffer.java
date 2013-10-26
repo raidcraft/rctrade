@@ -1,4 +1,4 @@
-package de.raidcraft.trade.api.sales;
+package de.raidcraft.trade.api.offers;
 
 import de.raidcraft.RaidCraft;
 import org.bukkit.inventory.ItemStack;

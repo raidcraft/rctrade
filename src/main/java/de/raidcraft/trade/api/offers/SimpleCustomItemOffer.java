@@ -1,4 +1,4 @@
-package de.raidcraft.trade.api.sales;
+package de.raidcraft.trade.api.offers;
 
 import de.raidcraft.api.items.CustomItemStack;
 
