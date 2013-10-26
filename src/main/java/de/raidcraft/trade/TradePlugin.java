@@ -2,7 +2,9 @@ package de.raidcraft.trade;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.rcconversations.actions.ActionManager;
 import de.raidcraft.trade.commands.TradeCommands;
+import de.raidcraft.trade.conversation.OpenTradeAction;
 import de.raidcraft.trade.tables.TSoldItem;
 
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ public class TradePlugin extends BasePlugin {
         tradeProvider = new TradeProviderImpl(this);
 
         RaidCraft.setupTradeProvider(tradeProvider);
+
+        ActionManager.registerAction(new OpenTradeAction());
     }
 
     @Override
