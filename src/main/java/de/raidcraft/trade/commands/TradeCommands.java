@@ -61,7 +61,7 @@ public class TradeCommands {
 
             Player player = (Player)sender;
             PlayerTradePartner playerTradePartner = new SimplePlayerTradePartner(player);
-            TradeSet tradeSet = plugin.getTradeConfigManager().getTradeSet(args.getString(0));
+            TradeSet tradeSet = plugin.getTradesManager().getTradeSet(args.getString(0));
             if(tradeSet == null) {
                 throw new CommandException("Es gibt kein Trade-Set mit diesem Name!");
             }

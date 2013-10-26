@@ -41,7 +41,7 @@ public class TradePlugin extends BasePlugin {
         return saleHistoryManager;
     }
 
-    public TradesManager getTradeConfigManager() {
+    public TradesManager getTradesManager() {
 
         return tradeConfigManager;
     }

@@ -48,10 +48,15 @@ public class TradesManager {
 
                 String name = file.getName().replace(".yml", "");
                 ConfigurationSection configurationSection = plugin.configure(new SimpleConfiguration<>(plugin, file), false);
-                TradeSet tradeSet = new ConfigTradeSet(name, configurationSection);
-                tradeSets.put(name, tradeSet);
+                registerTradeSet(name, configurationSection);
             }
         }
+    }
+
+    public void registerTradeSet(String name, ConfigurationSection config) {
+
+        TradeSet tradeSet = new ConfigTradeSet(name, config);
+        tradeSets.put(name, tradeSet);
     }
 
     public TradeSet getTradeSet(String tradeSetName) {
