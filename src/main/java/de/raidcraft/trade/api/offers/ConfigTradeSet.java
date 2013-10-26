@@ -20,7 +20,7 @@ public class ConfigTradeSet extends SimpleTradeSet {
         for(String key : offersSection.getKeys(false)) {
             ConfigurationSection offerSection = offersSection.getConfigurationSection(key);
             String itemIdentifier = offerSection.getString("item");
-            double price = config.getDouble("price");
+            double price = offerSection.getDouble("price");
             // custom-item
             if(itemIdentifier.startsWith("rci")) {
                 CustomItemStack customItemStack;
