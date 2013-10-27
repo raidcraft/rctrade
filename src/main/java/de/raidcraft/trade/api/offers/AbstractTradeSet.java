@@ -6,7 +6,7 @@ package de.raidcraft.trade.api.offers;
 public abstract class AbstractTradeSet implements TradeSet {
 
     private String name;
-    private boolean purchase;
+    private boolean purchase = true;
 
     protected AbstractTradeSet(String name) {
 
