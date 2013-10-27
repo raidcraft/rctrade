@@ -21,6 +21,7 @@ public class ConfigTradeSet extends SimpleTradeSet {
             ConfigurationSection offerSection = offersSection.getConfigurationSection(key);
             String itemIdentifier = offerSection.getString("item");
             double price = offerSection.getDouble("price");
+            int amount = offerSection.getInt("amount");
             // custom-item
             if(itemIdentifier.startsWith("rci")) {
                 CustomItemStack customItemStack;
@@ -36,6 +37,7 @@ public class ConfigTradeSet extends SimpleTradeSet {
                     RaidCraft.LOGGER.warning("[RCTrade] Fehler in Trade Config '" + name + "'. Der Preis ist niedriger als der Item-Verkaufspreis (Item:" + customItemStack.getItem().getId() + ")");
                     continue;
                 }
+                customItemStack.setAmount(amount);
                 addOffer(new SimpleCustomItemOffer(price, customItemStack));
                 continue;
             }
@@ -46,6 +48,7 @@ public class ConfigTradeSet extends SimpleTradeSet {
                     RaidCraft.LOGGER.warning("[RCTrade] Fehler in Trade Config '" + name + "'. Es gibt kein Vanilla-Item mit der ID:" + itemIdentifier);
                     continue;
                 }
+                itemStack.setAmount(amount);
                 addOffer(new SimpleOffer(price, itemStack));
             }
         }
