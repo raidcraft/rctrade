@@ -227,6 +227,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 break;
             }
         }
+        partner.getPlayer().updateInventory();
     }
 
     @Override
