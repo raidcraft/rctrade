@@ -3,6 +3,7 @@ package de.raidcraft.trade.api.window;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.economy.BalanceSource;
 import de.raidcraft.api.economy.Economy;
+import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.tooltip.FixedMultilineTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
@@ -149,19 +150,23 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                     partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast nicht genügend Geld auf dem Konto!");
                     return;
                 }
-                // take money
+                // take money and give item
+                Inventory playerInventory = partner.getPlayer().getInventory();
                 String itemName;
                 if(offer instanceof CustomItemOffer) {
-                    itemName = ((CustomItemOffer) offer).getCustomItemStack().getItem().getName();
+                    CustomItemStack clonedCustomItemStack = ((CustomItemOffer) offer).getCustomItemStack().clone();
+                    try {
+                        clonedCustomItemStack.rebuild(partner.getPlayer());
+                    } catch (CustomItemException e) {}
+                    itemName = clonedCustomItemStack.getItem().getName();
+                    playerInventory.addItem(clonedCustomItemStack);
                 }
                 else {
                     itemName = ItemUtils.getFriendlyName(offer.getItemStack().getType());
+                    playerInventory.addItem(offer.getItemStack().clone());
                 }
                 economy.substract(partner.getPlayer().getName(), offer.getPrice(),
                         BalanceSource.TRADE, "Kauf von " + offer.getItemStack().getAmount() + "x" + itemName);
-                // give item
-                Inventory playerInventory = partner.getPlayer().getInventory();
-                playerInventory.setItem(playerInventory.firstEmpty(), offer.getItemStack().clone());
                 break;
             }
 
@@ -191,7 +196,9 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                     ChatColor.DARK_GRAY + "--------------------------",
                     ChatColor.DARK_PURPLE + "Verkauft am " + soldItem.getDate(),
                     ChatColor.LIGHT_PURPLE + "Klicken um Verkauf rückgängig zu machen!"));
-            customItemStack.rebuild();
+            try {
+                customItemStack.rebuild(partner.getPlayer());
+            } catch (CustomItemException e) {}
             inventory.setItem(i, customItemStack);
         }
     }
@@ -207,7 +214,9 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                         ChatColor.DARK_GRAY + "--------------------------",
                         ChatColor.DARK_PURPLE + "Kaufpreis: " + offer.getPriceString(),
                         ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!"));
-                displayItem.rebuild();
+                try {
+                    displayItem.rebuild(partner.getPlayer());
+                } catch (CustomItemException e) {}
                 inventory.setItem(slotCount, displayItem);
             }
             else {
