@@ -41,7 +41,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         this.partner = partner;
         this.tradeSet = tradeSet;
 
-        inventory = Bukkit.createInventory(null, 54, "Händler");
+        inventory = Bukkit.createInventory(null, 54, tradeSet.getWindowName());
         ItemStack separator = new ItemStack(Material.PUMPKIN_STEM);
         ItemMeta itemMeta = separator.getItemMeta();
         itemMeta.setDisplayName(ChatColor.DARK_GRAY + "Oben Verkauf | Unten Rückkauf");
