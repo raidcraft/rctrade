@@ -12,4 +12,6 @@ public interface TradeSet {
     public List<Offer> getOffers();
 
     public boolean doesPurchase();
+
+    public String getWindowName();
 }
