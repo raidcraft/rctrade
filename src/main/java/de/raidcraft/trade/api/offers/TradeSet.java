@@ -10,4 +10,6 @@ public interface TradeSet {
     public String getName();
 
     public List<Offer> getOffers();
+
+    public boolean doesPurchase();
 }

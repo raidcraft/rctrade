@@ -15,6 +15,9 @@ public class ConfigTradeSet extends SimpleTradeSet {
 
         super(name);
 
+        ConfigurationSection settingsSection = config.getConfigurationSection("settings");
+        setPurchase(settingsSection.getBoolean("purchase", true));
+
         ConfigurationSection offersSection = config.getConfigurationSection("offers");
         if(offersSection == null) return;
         for(String key : offersSection.getKeys(false)) {

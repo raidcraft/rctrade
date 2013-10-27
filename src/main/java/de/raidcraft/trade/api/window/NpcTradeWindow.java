@@ -33,12 +33,12 @@ import java.util.List;
 public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
     private PlayerTradePartner partner;
-    private TradeSet offerSet;
+    private TradeSet tradeSet;
 
-    public NpcTradeWindow(PlayerTradePartner partner, TradeSet offerSet) {
+    public NpcTradeWindow(PlayerTradePartner partner, TradeSet tradeSet) {
 
         this.partner = partner;
-        this.offerSet = offerSet;
+        this.tradeSet = tradeSet;
 
         inventory = Bukkit.createInventory(null, 54, "Händler");
         ItemStack separator = new ItemStack(Material.PUMPKIN_STEM);
@@ -59,6 +59,11 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
     }
 
     private void sell(ItemStack itemStack, int slotNumber) {
+
+        if(!tradeSet.doesPurchase()) {
+            partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Dieser Händler kauf keine Items an!");
+            return;
+        }
 
         CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
         if(customItemStack == null) {
@@ -135,7 +140,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         }
 
         int slotCount = 0;
-        for(Offer offer : offerSet.getOffers()) {
+        for(Offer offer : tradeSet.getOffers()) {
 
             if(slotCount == slotNumber) {
                 Economy economy = RaidCraft.getEconomy();
@@ -194,7 +199,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
     private void refreshOffers() {
 
         int slotCount = 0;
-        for(Offer offer : offerSet.getOffers()) {
+        for(Offer offer : tradeSet.getOffers()) {
 
             if(offer instanceof CustomItemOffer) {
                 CustomItemStack displayItem = ((CustomItemOffer)offer).getCustomItemStack().clone();
