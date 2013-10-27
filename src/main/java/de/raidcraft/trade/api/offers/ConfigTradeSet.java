@@ -33,7 +33,7 @@ public class ConfigTradeSet extends SimpleTradeSet {
                     RaidCraft.LOGGER.warning("[RCTrade] Fehler in Trade Config '" + name + "'. Es gibt kein Custom-Item mit der ID:" + itemIdentifier.substring(3));
                     continue;
                 }
-                if(price < customItemStack.getItem().getSellPrice() * customItemStack.getAmount()) {
+                if(price != 0 && price < customItemStack.getItem().getSellPrice() * customItemStack.getAmount()) {
                     RaidCraft.LOGGER.warning("[RCTrade] Fehler in Trade Config '" + name + "'. Der Preis ist niedriger als der Item-Verkaufspreis (Item:" + customItemStack.getItem().getId() + ")");
                     continue;
                 }
