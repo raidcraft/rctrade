@@ -7,6 +7,7 @@ public abstract class AbstractTradeSet implements TradeSet {
 
     private String name;
     private boolean purchase = true;
+    private boolean repairing = false;
     private String windowName = "Händler";
 
     protected AbstractTradeSet(String name) {
@@ -24,6 +25,11 @@ public abstract class AbstractTradeSet implements TradeSet {
         this.windowName = windowName;
     }
 
+    protected void setRepairing(boolean repairing) {
+
+        this.repairing = repairing;
+    }
+
     @Override
     public String getName() {
 
@@ -34,6 +40,11 @@ public abstract class AbstractTradeSet implements TradeSet {
     public boolean doesPurchase() {
 
         return purchase;
+    }
+
+    public boolean isRepairing() {
+
+        return repairing;
     }
 
     public String getWindowName() {

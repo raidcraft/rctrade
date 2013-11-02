@@ -13,10 +13,12 @@ import de.raidcraft.trade.api.offers.CustomItemOffer;
 import de.raidcraft.trade.api.offers.Offer;
 import de.raidcraft.trade.api.offers.TradeSet;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
+import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -55,6 +57,13 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         inventory.setItem(42, separator.clone());
         inventory.setItem(43, separator.clone());
         inventory.setItem(44, separator.clone());
+        if (tradeSet.isRepairing()) {
+            ItemStack itemStack = new ItemStack(Material.ANVIL);
+            ItemMeta meta = itemStack.getItemMeta();
+            meta.setDisplayName(ChatColor.GOLD + "Zum Reparieren aller Items anklicken.");
+            itemStack.setItemMeta(meta);
+            inventory.setItem(35, itemStack);
+        }
 
         RaidCraft.getComponent(TradePlugin.class).registerEvents(this);
     }
@@ -177,6 +186,65 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         }
     }
 
+    private void repair(Player player) {
+
+        ItemStack[] armorContents = player.getEquipment().getArmorContents();
+        for (int i = 0; i < armorContents.length; i++) {
+            if (CustomItemUtil.isArmor(armorContents[i])) {
+                armorContents[i] = repairItem(player, armorContents[i]);
+            }
+        }
+        player.getInventory().setArmorContents(armorContents);
+        // lets repair the main and offhand weapon
+        player.getInventory().setItem(CustomItemUtil.MAIN_WEAPON_SLOT, repairItem(player, player.getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT)));
+        player.getInventory().setItem(CustomItemUtil.OFFHAND_WEAPON_SLOT, repairItem(player, player.getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT)));
+    }
+
+    private ItemStack repairItem(Player player, ItemStack itemStack) {
+
+        if (!CustomItemUtil.isCustomItem(itemStack)) {
+            return itemStack;
+        }
+        TradePlugin.LocalConfiguration config = RaidCraft.getComponent(TradePlugin.class).getConfiguration();
+        double balance = RaidCraft.getEconomy().getBalance(player.getName());
+        CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
+        int missingDurability = customItem.getMaxDurability() - customItem.getCustomDurability();
+        if (missingDurability > 0) {
+            double repairCost = missingDurability * (customItem.getItem().getItemLevel() - 32.5);
+            if (repairCost < 0) repairCost = 1.0;
+            switch (customItem.getItem().getQuality()) {
+
+                case POOR:
+                    repairCost *= config.poor_repair_cost;
+                    break;
+                case COMMON:
+                    repairCost *= config.common_repair_cost;
+                    break;
+                case UNCOMMON:
+                    repairCost *= config.uncommon_repair_cost;
+                    break;
+                case RARE:
+                    repairCost *= config.rare_repair_cost;
+                    break;
+                case EPIC:
+                    repairCost *= config.epic_repair_cost;
+                    break;
+            }
+            if (balance - repairCost < 0) {
+                player.sendMessage(ChatColor.RED + "Du hast nicht genügend Geld um deine Items zu reparieren.");
+            } else {
+                try {
+                    customItem.setCustomDurability(customItem.getMaxDurability());
+                    customItem.rebuild(player);
+                    RaidCraft.getEconomy().substract(player.getName(), repairCost, BalanceSource.REPAIR_ITEM, "Reparatur von " + customItem.getItem().getName());
+                } catch (CustomItemException e) {
+                    player.sendMessage(ChatColor.RED + e.getMessage());
+                }
+            }
+        }
+        return customItem;
+    }
+
     private void refreshSaleHistory() {
 
         List<SoldItem> soldItems = RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().getSales(partner.getPlayer());
@@ -198,7 +266,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                     ChatColor.LIGHT_PURPLE + "Klicken um Verkauf rückgängig zu machen!"));
             try {
                 customItemStack.rebuild(partner.getPlayer());
-            } catch (CustomItemException e) {}
+            } catch (CustomItemException ignored) {}
             inventory.setItem(i, customItemStack);
         }
     }
@@ -216,7 +284,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                         ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!"));
                 try {
                     displayItem.rebuild(partner.getPlayer());
-                } catch (CustomItemException e) {}
+                } catch (CustomItemException ignored) {}
                 inventory.setItem(slotCount, displayItem);
             }
             else {
@@ -254,7 +322,11 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
         // buy item from npc
         if(event.getRawSlot() <= 35) {
-            buy(event.getSlot());
+            if (tradeSet.isRepairing() && event.getRawSlot() == 35) {
+                repair((Player) event.getWhoClicked());
+            } else {
+                buy(event.getSlot());
+            }
         }
 
         // undo last sell/buy

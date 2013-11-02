@@ -18,6 +18,7 @@ public class ConfigTradeSet extends SimpleTradeSet {
         ConfigurationSection settingsSection = config.getConfigurationSection("settings");
         if(settingsSection != null) {
             setPurchase(settingsSection.getBoolean("purchase", true));
+            setRepairing(settingsSection.getBoolean("repairing", false));
             setWindowName(settingsSection.getString("window-name", "Händler"));
         }
 

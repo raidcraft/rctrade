@@ -13,5 +13,7 @@ public interface TradeSet {
 
     public boolean doesPurchase();
 
+    public boolean isRepairing();
+
     public String getWindowName();
 }
