@@ -77,7 +77,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
         CustomItemStack customItemStack = RaidCraft.getCustomItem(itemStack);
         if(customItemStack == null) {
-            partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Es können nur Sepzial-Items verkauft werden!");
+            partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Es können nur Spezial-Items verkauft werden!");
             return;
         }
 
