@@ -61,6 +61,9 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
             ItemStack itemStack = new ItemStack(Material.ANVIL);
             ItemMeta meta = itemStack.getItemMeta();
             meta.setDisplayName(ChatColor.GOLD + "Zum Reparieren aller Items anklicken.");
+            ArrayList<String> lore = new ArrayList<>();
+            lore.add(ChatColor.RED + "Reparatur Kosten: " + getTotalRepairCost(partner.getPlayer()));
+            itemMeta.setLore(lore);
             itemStack.setItemMeta(meta);
             inventory.setItem(35, itemStack);
         }
@@ -166,7 +169,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                     CustomItemStack clonedCustomItemStack = ((CustomItemOffer) offer).getCustomItemStack().clone();
                     try {
                         clonedCustomItemStack.rebuild(partner.getPlayer());
-                    } catch (CustomItemException e) {}
+                    } catch (CustomItemException ignored) {}
                     itemName = clonedCustomItemStack.getItem().getName();
                     playerInventory.addItem(clonedCustomItemStack);
                 }
@@ -205,12 +208,49 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         if (!CustomItemUtil.isCustomItem(itemStack)) {
             return itemStack;
         }
-        TradePlugin.LocalConfiguration config = RaidCraft.getComponent(TradePlugin.class).getConfiguration();
+        CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
         double balance = RaidCraft.getEconomy().getBalance(player.getName());
+        double repairCost = getRepairCost(customItem);
+        if (balance - repairCost < 0) {
+            player.sendMessage(ChatColor.RED + "Du hast nicht genügend Geld um deine Items zu reparieren.");
+        } else {
+            try {
+                customItem.setCustomDurability(customItem.getMaxDurability());
+                customItem.rebuild(player);
+                RaidCraft.getEconomy().substract(player.getName(), repairCost, BalanceSource.REPAIR_ITEM, "Reparatur von " + customItem.getItem().getName());
+            } catch (CustomItemException e) {
+                player.sendMessage(ChatColor.RED + e.getMessage());
+            }
+        }
+        return customItem;
+    }
+
+    private double getTotalRepairCost(Player player) {
+
+        double totalRepairCost = 0.0;
+        // add all equiped armor items to the cost
+        for (ItemStack armorContent : player.getEquipment().getArmorContents()) {
+            if (CustomItemUtil.isArmor(armorContent)) {
+                totalRepairCost += getRepairCost(armorContent);
+            }
+        }
+        // add main- and offhand weapons
+        totalRepairCost += getRepairCost(player.getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT));
+        totalRepairCost += getRepairCost(player.getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT));
+        return totalRepairCost;
+    }
+
+    private double getRepairCost(ItemStack itemStack) {
+
+        if (!CustomItemUtil.isCustomItem(itemStack)) {
+            return 0;
+        }
+        TradePlugin.LocalConfiguration config = RaidCraft.getComponent(TradePlugin.class).getConfiguration();
         CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
         int missingDurability = customItem.getMaxDurability() - customItem.getCustomDurability();
+        double repairCost = 0.0;
         if (missingDurability > 0) {
-            double repairCost = missingDurability * (customItem.getItem().getItemLevel() - 32.5);
+            repairCost = missingDurability * (customItem.getItem().getItemLevel() - 32.5);
             if (repairCost < 0) repairCost = 1.0;
             switch (customItem.getItem().getQuality()) {
 
@@ -230,19 +270,8 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                     repairCost *= config.epic_repair_cost;
                     break;
             }
-            if (balance - repairCost < 0) {
-                player.sendMessage(ChatColor.RED + "Du hast nicht genügend Geld um deine Items zu reparieren.");
-            } else {
-                try {
-                    customItem.setCustomDurability(customItem.getMaxDurability());
-                    customItem.rebuild(player);
-                    RaidCraft.getEconomy().substract(player.getName(), repairCost, BalanceSource.REPAIR_ITEM, "Reparatur von " + customItem.getItem().getName());
-                } catch (CustomItemException e) {
-                    player.sendMessage(ChatColor.RED + e.getMessage());
-                }
-            }
         }
-        return customItem;
+        return repairCost;
     }
 
     private void refreshSaleHistory() {
