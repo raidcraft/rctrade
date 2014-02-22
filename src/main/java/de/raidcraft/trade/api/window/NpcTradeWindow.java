@@ -67,7 +67,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
             repairItemMeta.setDisplayName(ChatColor.GOLD + "Zum Reparieren aller Items anklicken.");
             ArrayList<String> repairItemLore = new ArrayList<>();
             repairItemLore.add(Translator.tr(TradePlugin.class, player, "trade.repair.items-needing-repair", "These items need to be repaired:"));
-            repairItemLore.add(ChatColor.DARK_PURPLE + "-------------------------------------------------------");
+            repairItemLore.add(ChatColor.DARK_PURPLE + "--------------------------");
             // lets list what costs what to repair
             EntityEquipment equipment = player.getEquipment();
             double repairCost;
@@ -92,7 +92,8 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 repairItemLore.add(customItem.getItem().getQuality().getColor() + customItem.getItem().getName() + ": "
                         + ChatColor.RED + "-" + RaidCraft.getEconomy().getFormattedAmount(repairCost));
             }
-            repairItemLore.add(ChatColor.RED + "Reparatur Kosten: " + getTotalRepairCost(player));
+            repairItemLore.add(ChatColor.RED + "Reparatur Kosten: " + ChatColor.RED + "-"
+                    + RaidCraft.getEconomy().getFormattedAmount(getTotalRepairCost(player)));
 
             repairItemMeta.setLore(repairItemLore);
             itemStack.setItemMeta(repairItemMeta);
