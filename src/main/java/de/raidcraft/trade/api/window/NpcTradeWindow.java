@@ -7,6 +7,7 @@ import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.tooltip.FixedMultilineTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
+import de.raidcraft.api.language.Translator;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.SoldItem;
 import de.raidcraft.trade.api.offers.CustomItemOffer;
@@ -23,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -57,14 +59,43 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         inventory.setItem(42, separator.clone());
         inventory.setItem(43, separator.clone());
         inventory.setItem(44, separator.clone());
+
         if (tradeSet.isRepairing()) {
+            Player player = partner.getPlayer();
             ItemStack itemStack = new ItemStack(Material.ANVIL);
-            ItemMeta meta = itemStack.getItemMeta();
-            meta.setDisplayName(ChatColor.GOLD + "Zum Reparieren aller Items anklicken.");
-            ArrayList<String> lore = new ArrayList<>();
-            lore.add(ChatColor.RED + "Reparatur Kosten: " + getTotalRepairCost(partner.getPlayer()));
-            itemMeta.setLore(lore);
-            itemStack.setItemMeta(meta);
+            ItemMeta repairItemMeta = itemStack.getItemMeta();
+            repairItemMeta.setDisplayName(ChatColor.GOLD + "Zum Reparieren aller Items anklicken.");
+            ArrayList<String> repairItemLore = new ArrayList<>();
+            repairItemLore.add(Translator.tr(TradePlugin.class, player, "trade.repair.items-needing-repair", "These items need to be repaired:"));
+            repairItemLore.add(ChatColor.DARK_PURPLE + "-------------------------------------------------------");
+            // lets list what costs what to repair
+            EntityEquipment equipment = player.getEquipment();
+            double repairCost;
+            for (ItemStack item : equipment.getArmorContents()) {
+                repairCost = getRepairCost(item);
+                if (repairCost > 0.0) {
+                    CustomItemStack customItem = RaidCraft.getCustomItem(item);
+                    repairItemLore.add(customItem.getItem().getQuality().getColor() + customItem.getItem().getName() + ": "
+                            + ChatColor.RED + "-" + RaidCraft.getEconomy().getFormattedAmount(repairCost));
+                }
+            }
+            // mainhand and offhand
+            repairCost = getRepairCost(player.getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT));
+            if (repairCost > 0.0) {
+                CustomItemStack customItem = RaidCraft.getCustomItem(player.getInventory().getItem(CustomItemUtil.MAIN_WEAPON_SLOT));
+                repairItemLore.add(customItem.getItem().getQuality().getColor() + customItem.getItem().getName() + ": "
+                        + ChatColor.RED + "-" + RaidCraft.getEconomy().getFormattedAmount(repairCost));
+            }
+            repairCost = getRepairCost(player.getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT));
+            if (repairCost > 0.0) {
+                CustomItemStack customItem = RaidCraft.getCustomItem(player.getInventory().getItem(CustomItemUtil.OFFHAND_WEAPON_SLOT));
+                repairItemLore.add(customItem.getItem().getQuality().getColor() + customItem.getItem().getName() + ": "
+                        + ChatColor.RED + "-" + RaidCraft.getEconomy().getFormattedAmount(repairCost));
+            }
+            repairItemLore.add(ChatColor.RED + "Reparatur Kosten: " + getTotalRepairCost(player));
+
+            repairItemMeta.setLore(repairItemLore);
+            itemStack.setItemMeta(repairItemMeta);
             inventory.setItem(35, itemStack);
         }
 
