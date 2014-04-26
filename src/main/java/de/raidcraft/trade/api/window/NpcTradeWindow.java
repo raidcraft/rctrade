@@ -279,6 +279,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         }
         TradePlugin.LocalConfiguration config = RaidCraft.getComponent(TradePlugin.class).getConfiguration();
         CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
+        if(customItem == null) { return config.epic_repair_cost; }
         int missingDurability = customItem.getMaxDurability() - customItem.getCustomDurability();
         double repairCost = 0.0;
         if (missingDurability > 0) {
