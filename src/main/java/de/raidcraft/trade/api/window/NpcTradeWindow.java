@@ -106,7 +106,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
     private void sell(ItemStack itemStack, int slotNumber) {
 
         if(!tradeSet.doesPurchase()) {
-            partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Dieser Händler kauf keine Items an!");
+            partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Dieser Händler kauft keine Items an!");
             return;
         }
 
