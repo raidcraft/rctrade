@@ -4,11 +4,13 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.storage.ItemStorage;
 import de.raidcraft.api.storage.StorageException;
 import de.raidcraft.trade.api.SoldItem;
+import de.raidcraft.trade.tables.TSaleLog;
 import de.raidcraft.trade.tables.TSoldItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class SaleHistoryManager {
         this.itemStorage = new ItemStorage("trade");
     }
 
-    public void addSale(ItemStack itemStack, Player player) {
+    public TSoldItem addSale(ItemStack itemStack, Player player) {
 
         int storageId = itemStorage.storeObject(itemStack);
 
@@ -40,6 +42,7 @@ public class SaleHistoryManager {
         tSoldItem.setStorageId(storageId);
         RaidCraft.getDatabase(TradePlugin.class).save(tSoldItem);
         deleteOldSales(player);
+        return tSoldItem;
     }
 
     public List<SoldItem> getSales(Player player) {
@@ -74,7 +77,9 @@ public class SaleHistoryManager {
             itemStorage.removeObject(tSoldItem.getStorageId());
         } catch (StorageException e) {
         }
-        RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
+        TSaleLog log = plugin.getDatabase().find(TSaleLog.class).where().eq("sold_item_id", tSoldItem.getId()).findUnique();
+        if (log != null) plugin.getDatabase().delete(log);
+        plugin.getDatabase().delete(tSoldItem);
     }
 
     private void deleteOldSales(Player player) {
@@ -96,5 +101,18 @@ public class SaleHistoryManager {
                 RaidCraft.getDatabase(TradePlugin.class).delete(tSoldItem);
             }
         }
+    }
+
+    public static TSaleLog log(ItemStack itemStack, Player player, double price, String action) {
+
+        TSaleLog log = new TSaleLog();
+        log.setAction(action);
+        log.setUuid(player.getUniqueId());
+        log.setAmount(itemStack.getAmount());
+        log.setPrice(price);
+        log.setItem(RaidCraft.getItemIdString(itemStack));
+        log.setTimestamp(Timestamp.from(Instant.now()));
+        RaidCraft.getDatabase(TradePlugin.class).save(log);
+        return log;
     }
 }

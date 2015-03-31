@@ -8,12 +8,15 @@ import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.tooltip.FixedMultilineTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.api.language.Translator;
+import de.raidcraft.trade.SaleHistoryManager;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.SoldItem;
 import de.raidcraft.trade.api.offers.CustomItemOffer;
 import de.raidcraft.trade.api.offers.Offer;
 import de.raidcraft.trade.api.offers.TradeSet;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
+import de.raidcraft.trade.tables.TSaleLog;
+import de.raidcraft.trade.tables.TSoldItem;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.Bukkit;
@@ -130,7 +133,10 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         partner.getPlayer().getInventory().setItem(slotNumber, new ItemStack(Material.AIR));
         partner.getPlayer().updateInventory();
 
-        RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().addSale(itemStack, partner.getPlayer());
+        TSoldItem soldItem = RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().addSale(itemStack, partner.getPlayer());
+        TSaleLog log = SaleHistoryManager.log(customItemStack, partner.getPlayer(), itemStack.getAmount(), "BUY");
+        log.setSoldItemId(soldItem.getId());
+        RaidCraft.getDatabase(TradePlugin.class).update(log);
         refreshSaleHistory();
     }
 
@@ -166,6 +172,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                         BalanceSource.TRADE, "Rückkauf von " + itemStack.getAmount() + "x" + customItemStack.getItem().getName());
                 //refresh history
                 RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().removeSale(soldItem.getDatabaseId());
+                SaleHistoryManager.log(customItemStack, partner.getPlayer(), itemStack.getAmount(), "REBUY");
                 refreshSaleHistory();
                 // give item
                 Inventory playerInventory = partner.getPlayer().getInventory();
@@ -211,6 +218,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 }
                 economy.substract(partner.getPlayer().getName(), offer.getPrice(),
                         BalanceSource.TRADE, "Kauf von " + offer.getItemStack().getAmount() + "x" + itemName);
+                SaleHistoryManager.log(offer.getItemStack(), partner.getPlayer(), offer.getPrice(), "BUY");
                 break;
             }
 

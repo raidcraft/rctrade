@@ -7,6 +7,7 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.rcconversations.actions.ActionManager;
 import de.raidcraft.trade.commands.TradeCommands;
 import de.raidcraft.trade.conversation.OpenTradeAction;
+import de.raidcraft.trade.tables.TSaleLog;
 import de.raidcraft.trade.tables.TSoldItem;
 
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ public class TradePlugin extends BasePlugin {
 
         List<Class<?>> databases = new ArrayList<>();
         databases.add(TSoldItem.class);
+        databases.add(TSaleLog.class);
         return databases;
     }
 
