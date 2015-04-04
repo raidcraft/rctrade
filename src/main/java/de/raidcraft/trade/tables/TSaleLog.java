@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Table(name = "rctrade_sales_log")
 public class TSaleLog {
 
+    @Id
     private int id;
     private UUID uuid;
     private int soldItemId;
