@@ -11,7 +11,7 @@ public interface TradeSet {
 
     public List<Offer> getOffers();
 
-    public boolean doesPurchase();
+    public boolean isPurchasing();
 
     public boolean isRepairing();
 

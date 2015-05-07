@@ -11,7 +11,6 @@ import de.raidcraft.api.language.Translator;
 import de.raidcraft.trade.SaleHistoryManager;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.SoldItem;
-import de.raidcraft.trade.api.offers.CustomItemOffer;
 import de.raidcraft.trade.api.offers.Offer;
 import de.raidcraft.trade.api.offers.TradeSet;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
@@ -108,7 +107,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
 
     private void sell(ItemStack itemStack, int slotNumber) {
 
-        if(!tradeSet.doesPurchase()) {
+        if(!tradeSet.isPurchasing()) {
             partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Dieser Händler kauft keine Items an!");
             return;
         }
@@ -127,7 +126,7 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
             return;
         }
 
-        economy.add(partner.getPlayer().getName(), price,
+        economy.add(partner.getPlayer().getUniqueId(), price,
                 BalanceSource.TRADE, "Verkauf von " + itemStack.getAmount() + "x" + customItemStack.getItem().getName());
 
         partner.getPlayer().getInventory().setItem(slotNumber, new ItemStack(Material.AIR));
@@ -163,12 +162,12 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
                 Economy economy = RaidCraft.getEconomy();
                 double price = customItemStack.getItem().getSellPrice() * itemStack.getAmount();
                 // check money
-                if(!economy.hasEnough(partner.getPlayer().getName(), price)) {
+                if(!economy.hasEnough(partner.getPlayer().getUniqueId(), price)) {
                     partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast nicht genügend Geld auf dem Konto!");
                     return;
                 }
                 // take money
-                economy.substract(partner.getPlayer().getName(), price,
+                economy.substract(partner.getPlayer().getUniqueId(), price,
                         BalanceSource.TRADE, "Rückkauf von " + itemStack.getAmount() + "x" + customItemStack.getItem().getName());
                 //refresh history
                 RaidCraft.getComponent(TradePlugin.class).getSaleHistoryManager().removeSale(soldItem.getDatabaseId());
@@ -197,26 +196,25 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
             if(slotCount == slotNumber) {
                 Economy economy = RaidCraft.getEconomy();
                 // check money
-                if(!economy.hasEnough(partner.getPlayer().getName(), offer.getPrice())) {
+                if(!economy.hasEnough(partner.getPlayer().getUniqueId(), offer.getPrice())) {
                     partner.getPlayer().sendMessage(ChatColor.DARK_RED + "Du hast nicht genügend Geld auf dem Konto!");
                     return;
                 }
                 // take money and give item
                 Inventory playerInventory = partner.getPlayer().getInventory();
                 String itemName;
-                if(offer instanceof CustomItemOffer) {
-                    CustomItemStack clonedCustomItemStack = ((CustomItemOffer) offer).getCustomItemStack().clone();
+                ItemStack itemStack = offer.getItemStack().clone();
+                if(itemStack instanceof CustomItemStack) {
+                    itemName = ((CustomItemStack) itemStack).getItem().getName();
                     try {
-                        clonedCustomItemStack.rebuild(partner.getPlayer());
-                    } catch (CustomItemException ignored) {}
-                    itemName = clonedCustomItemStack.getItem().getName();
-                    playerInventory.addItem(clonedCustomItemStack);
+                        ((CustomItemStack) itemStack).rebuild(partner.getPlayer());
+                    } catch (CustomItemException ignored) {
+                    }
+                } else {
+                    itemName = ItemUtils.getFriendlyName(itemStack.getType());
                 }
-                else {
-                    itemName = ItemUtils.getFriendlyName(offer.getItemStack().getType());
-                    playerInventory.addItem(offer.getItemStack().clone());
-                }
-                economy.substract(partner.getPlayer().getName(), offer.getPrice(),
+                playerInventory.addItem(itemStack);
+                economy.substract(partner.getPlayer().getUniqueId(), offer.getPrice(),
                         BalanceSource.TRADE, "Kauf von " + offer.getItemStack().getAmount() + "x" + itemName);
                 SaleHistoryManager.log(offer.getItemStack(), partner.getPlayer(), offer.getPrice(), "BUY");
                 break;
@@ -346,31 +344,24 @@ public class NpcTradeWindow extends AbstractTradeWindow implements Listener {
         int slotCount = 0;
         for(Offer offer : tradeSet.getOffers()) {
 
-            if(offer instanceof CustomItemOffer) {
-                CustomItemStack displayItem = ((CustomItemOffer)offer).getCustomItemStack().clone();
-                displayItem.setTooltip(new FixedMultilineTooltip(TooltipSlot.MISC,
-                        ChatColor.DARK_GRAY + "--------------------------",
-                        ChatColor.DARK_PURPLE + "Kaufpreis: " + offer.getPriceString(),
-                        ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!"));
+            ItemStack displayItem = offer.getItemStack().clone();
+            if (displayItem instanceof CustomItemStack) {
                 try {
-                    displayItem.rebuild(partner.getPlayer());
-                } catch (CustomItemException ignored) {}
-                inventory.setItem(slotCount, displayItem);
+                    ((CustomItemStack) displayItem).rebuild(partner.getPlayer());
+                } catch (CustomItemException ignored) {
+                }
             }
-            else {
-                ItemStack displayItem = offer.getItemStack().clone();
-                ItemMeta itemMeta = displayItem.getItemMeta();
-                List<String> lore = new ArrayList<>();
-                lore.add(ChatColor.DARK_GRAY + "--------------------------");
-                lore.add(ChatColor.DARK_PURPLE + "Kaufpreis: " + offer.getPriceString());
-                lore.add(ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!");
-                itemMeta.setLore(lore);
-                displayItem.setItemMeta(itemMeta);
-                inventory.setItem(slotCount, displayItem);
-            }
+            ItemMeta itemMeta = displayItem.getItemMeta();
+            List<String> lore = new ArrayList<>();
+            lore.add(ChatColor.DARK_GRAY + "--------------------------");
+            lore.add(ChatColor.DARK_PURPLE + "Kaufpreis: " + offer.getPriceString());
+            lore.add(ChatColor.LIGHT_PURPLE + "Item anklicken um es zu kaufen!");
+            itemMeta.setLore(lore);
+            displayItem.setItemMeta(itemMeta);
+            inventory.setItem(slotCount, displayItem);
 
             slotCount++;
-            if(slotCount > 35) {
+            if (slotCount > 35) {
                 break;
             }
         }

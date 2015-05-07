@@ -1,4 +1,7 @@
-package de.raidcraft.trade.api.offers;
+package de.raidcraft.trade.tradesets;
+
+import de.raidcraft.trade.api.offers.AbstractTradeSet;
+import de.raidcraft.trade.api.offers.Offer;
 
 import java.util.ArrayList;
 import java.util.List;

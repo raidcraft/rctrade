@@ -1,7 +1,7 @@
 package de.raidcraft.trade;
 
 import de.raidcraft.api.config.SimpleConfiguration;
-import de.raidcraft.trade.api.offers.ConfigTradeSet;
+import de.raidcraft.trade.tradesets.ConfigTradeSet;
 import de.raidcraft.trade.api.offers.TradeSet;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.configuration.ConfigurationSection;

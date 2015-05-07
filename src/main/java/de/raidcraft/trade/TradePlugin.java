@@ -9,6 +9,8 @@ import de.raidcraft.trade.commands.TradeCommands;
 import de.raidcraft.trade.conversation.OpenTradeAction;
 import de.raidcraft.trade.tables.TSaleLog;
 import de.raidcraft.trade.tables.TSoldItem;
+import de.raidcraft.trade.tables.TTradeSetCache;
+import de.raidcraft.trade.tables.TTradeSetCacheItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,7 @@ public class TradePlugin extends BasePlugin {
 
         registerCommands(TradeCommands.class);
 
-        configuration = configure(new LocalConfiguration(this), true);
+        configuration = configure(new LocalConfiguration(this));
         saleHistoryManager = new SaleHistoryManager(this);
         tradeConfigManager = new TradesManager(this);
         tradeProvider = new TradeProviderImpl(this);
@@ -67,6 +69,8 @@ public class TradePlugin extends BasePlugin {
         List<Class<?>> databases = new ArrayList<>();
         databases.add(TSoldItem.class);
         databases.add(TSaleLog.class);
+        databases.add(TTradeSetCache.class);
+        databases.add(TTradeSetCacheItem.class);
         return databases;
     }
 

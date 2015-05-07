@@ -1,17 +1,18 @@
-package de.raidcraft.trade.api.offers;
+package de.raidcraft.trade.offers;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.trade.api.offers.Offer;
 import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Philip Urban
  */
-public class SimpleOffer implements Offer {
+public class ItemOffer implements Offer {
 
     private double price;
     private ItemStack itemStack;
 
-    protected SimpleOffer(double price, ItemStack itemStack) {
+    public ItemOffer(double price, ItemStack itemStack) {
 
         this.price = price;
         this.itemStack = itemStack;
