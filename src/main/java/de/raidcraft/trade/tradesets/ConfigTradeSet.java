@@ -12,17 +12,24 @@ import org.bukkit.inventory.ItemStack;
  */
 public class ConfigTradeSet extends SimpleTradeSet {
 
+    protected final ConfigurationSection config;
+
     public ConfigTradeSet(String name, ConfigurationSection config) {
 
         super(name);
-
+        this.config = config;
         ConfigurationSection settingsSection = config.getConfigurationSection("settings");
         if(settingsSection != null) {
             setPurchasing(settingsSection.getBoolean("purchase", true));
             setRepairing(settingsSection.getBoolean("repairing", false));
             setWindowName(settingsSection.getString("window-name", "Händler"));
         }
+    }
 
+    @Override
+    public void reloadOffers() {
+
+        super.reloadOffers();
         ConfigurationSection offersSection = config.getConfigurationSection("offers");
         if(offersSection == null) return;
         for(String key : offersSection.getKeys(false)) {
@@ -34,7 +41,8 @@ public class ConfigTradeSet extends SimpleTradeSet {
                 ItemStack item = RaidCraft.getItem(itemIdentifier);
                 if (item instanceof CustomItemStack) {
                     if(price != 0 && price < ((CustomItemStack) item).getItem().getSellPrice() * item.getAmount()) {
-                        RaidCraft.LOGGER.warning("[RCTrade] Fehler in Trade Config '" + name + "'. Der Preis ist niedriger als der Item-Verkaufspreis (Item:" + itemIdentifier + ")");
+                        RaidCraft.LOGGER.warning("[RCTrade] Fehler in Trade Config '" + getName() + "'. " +
+                                "Der Preis ist niedriger als der Item-Verkaufspreis (Item:" + itemIdentifier + ")");
                         continue;
                     }
                 }

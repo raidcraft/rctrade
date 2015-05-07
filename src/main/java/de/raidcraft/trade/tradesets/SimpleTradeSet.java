@@ -28,4 +28,10 @@ public class SimpleTradeSet extends AbstractTradeSet {
 
         return offers;
     }
+
+    @Override
+    public void reloadOffers() {
+
+        offers.clear();
+    }
 }

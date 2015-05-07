@@ -9,6 +9,8 @@ public interface TradeSet {
 
     public String getName();
 
+    public void reloadOffers();
+
     public List<Offer> getOffers();
 
     public boolean isPurchasing();

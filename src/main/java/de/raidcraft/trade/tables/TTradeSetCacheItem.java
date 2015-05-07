@@ -20,5 +20,6 @@ public class TTradeSetCacheItem {
     private int id;
     private TTradeSetCache cache;
     private String item;
+    private int amount;
     private double price;
 }

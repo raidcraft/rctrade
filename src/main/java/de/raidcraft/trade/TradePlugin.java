@@ -56,6 +56,8 @@ public class TradePlugin extends BasePlugin {
         public double rare_repair_cost = 0.25;
         @Setting("repair-cost.epic")
         public double epic_repair_cost = 0.5;
+        @Setting("trade-refresh-interval")
+        public double trade_refresh_interval = 60;
 
         public LocalConfiguration(TradePlugin plugin) {
 
