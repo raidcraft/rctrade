@@ -9,9 +9,11 @@ public interface TradeSet {
 
     public String getName();
 
+    public void reloadOffers();
+
     public List<Offer> getOffers();
 
-    public boolean doesPurchase();
+    public boolean isPurchasing();
 
     public boolean isRepairing();
 

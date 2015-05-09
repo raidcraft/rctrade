@@ -1,4 +1,7 @@
-package de.raidcraft.trade.api.offers;
+package de.raidcraft.trade.tradesets;
+
+import de.raidcraft.trade.api.offers.AbstractTradeSet;
+import de.raidcraft.trade.api.offers.Offer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,5 +27,11 @@ public class SimpleTradeSet extends AbstractTradeSet {
     public List<Offer> getOffers() {
 
         return offers;
+    }
+
+    @Override
+    public void reloadOffers() {
+
+        offers.clear();
     }
 }
