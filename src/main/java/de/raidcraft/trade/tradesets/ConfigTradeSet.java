@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.trade.offers.ItemOffer;
+import de.raidcraft.util.ConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
@@ -49,7 +50,7 @@ public class ConfigTradeSet extends SimpleTradeSet {
                 item.setAmount(amount);
                 addOffer(new ItemOffer(price, item));
             } catch (CustomItemException e) {
-                e.printStackTrace();
+                RaidCraft.LOGGER.warning(e.getMessage() + " in " + ConfigUtil.getFileName(offerSection));
             }
         }
     }
