@@ -7,9 +7,9 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface Offer {
 
-    public ItemStack getItemStack();
+    ItemStack getItemStack();
 
-    public double getPrice();
+    double getPrice();
 
-    public String getPriceString();
+    String getPriceString();
 }

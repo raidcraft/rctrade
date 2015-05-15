@@ -5,7 +5,7 @@ package de.raidcraft.trade.api.window;
  */
 public interface TradeWindow {
 
-    public void open();
+    void open();
 
-    public void close();
+    void close();
 }

@@ -7,15 +7,15 @@ import java.util.List;
  */
 public interface TradeSet {
 
-    public String getName();
+    String getName();
 
-    public void reloadOffers();
+    void reloadOffers();
 
-    public List<Offer> getOffers();
+    List<Offer> getOffers();
 
-    public boolean isPurchasing();
+    boolean isPurchasing();
 
-    public boolean isRepairing();
+    boolean isRepairing();
 
-    public String getWindowName();
+    String getWindowName();
 }

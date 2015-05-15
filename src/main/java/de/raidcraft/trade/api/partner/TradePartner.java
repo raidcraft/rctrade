@@ -5,6 +5,6 @@ package de.raidcraft.trade.api.partner;
  */
 public interface TradePartner {
 
-    public void accept();
+    void accept();
 
 }

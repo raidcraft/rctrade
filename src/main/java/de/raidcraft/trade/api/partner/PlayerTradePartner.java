@@ -7,5 +7,5 @@ import org.bukkit.entity.Player;
  */
 public interface PlayerTradePartner extends TradePartner {
 
-    public Player getPlayer();
+    Player getPlayer();
 }

@@ -5,8 +5,8 @@ package de.raidcraft.trade.api;
  */
 public interface Trade {
 
-    public void process();
+    void process();
 
-    public void abort();
+    void abort();
 
 }
