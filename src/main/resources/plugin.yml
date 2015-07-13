@@ -5,5 +5,4 @@ description: Provideds player and npc trades.
 author: Strasse36
 website: http://www.raid-craft.de
 depend: [RaidCraft-API]
-softdepend: [RCConversations, RCConversations2]
 database: true
