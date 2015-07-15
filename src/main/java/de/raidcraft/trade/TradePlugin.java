@@ -2,9 +2,11 @@ package de.raidcraft.trade;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.trade.commands.TradeCommands;
+import de.raidcraft.trade.conversation.OpenTradeAction;
 import de.raidcraft.trade.tables.TSaleLog;
 import de.raidcraft.trade.tables.TSoldItem;
 import de.raidcraft.trade.tables.TTradeSetCache;
@@ -35,7 +37,8 @@ public class TradePlugin extends BasePlugin {
 
         RaidCraft.setupTradeProvider(tradeProvider);
 
-        // ActionManager.registerAction(new OpenTradeAction());
+        ActionAPI.register(this).global()
+                .action(new OpenTradeAction());
     }
 
     @Override
