@@ -2,7 +2,6 @@ package de.raidcraft.trade.conversation;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
-import de.raidcraft.rcconversations.api.action.ActionInformation;
 import de.raidcraft.trade.TradePlugin;
 import de.raidcraft.trade.api.offers.TradeSet;
 import de.raidcraft.trade.api.partner.PlayerTradePartner;
@@ -15,7 +14,6 @@ import org.bukkit.entity.Player;
 /**
  * @author Philip Urban
  */
-@ActionInformation(name = "OPEN_TRADE")
 public class OpenTradeAction implements Action<Player> {
 
     @Override
@@ -23,7 +21,7 @@ public class OpenTradeAction implements Action<Player> {
             value = "trade.open",
             desc = "Opens the given trade for the player",
             conf = "trade: trade id to open",
-            aliases = {"open-trade", "opentrade"}
+            aliases = {"open-trade", "opentrade", "OPEN_TRADE"}
     )
     public void accept(Player player, ConfigurationSection config) {
 
