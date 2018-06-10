@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>trade</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.12-0.1-SNAPSHOT</version>
     <name>RCTrade</name>
 
     <parent>
@@ -39,14 +39,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.raidcraft</groupId>
+            <groupId>de.faldoria</groupId>
             <artifactId>raidcraft-api</artifactId>
-            <version>1.6.3-SNAPSHOT</version>
+            <version>1.12-0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>de.raidcraft</groupId>
-            <artifactId>rcconversations</artifactId>
-            <version>1.2.0</version>
+            <groupId>de.faldoria</groupId>
+            <artifactId>raidcraft-api</artifactId>
+            <version>1.12-0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
