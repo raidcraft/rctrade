@@ -23,7 +23,7 @@ public class ConfigTradeSet extends SimpleTradeSet {
         if(settingsSection != null) {
             setPurchasing(settingsSection.getBoolean("purchase", true));
             setRepairing(settingsSection.getBoolean("repairing", false));
-            setWindowName(settingsSection.getString("window-name", "Händler"));
+            setWindowName(settingsSection.getString("window-displayName", "Händler"));
         }
     }
 
