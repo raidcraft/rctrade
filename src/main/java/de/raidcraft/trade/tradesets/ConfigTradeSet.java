@@ -39,7 +39,7 @@ public class ConfigTradeSet extends SimpleTradeSet {
             double price = offerSection.getDouble("price");
             int amount = offerSection.getInt("amount");
             try {
-                ItemStack item = RaidCraft.getItem(itemIdentifier);
+                ItemStack item = RaidCraft.getSafeItem(itemIdentifier);
                 if (item instanceof CustomItemStack) {
                     if(price != 0 && price < ((CustomItemStack) item).getItem().getSellPrice() * item.getAmount()) {
                         RaidCraft.LOGGER.warning("[RCTrade] Fehler in Trade Config '" + getName() + "'. " +

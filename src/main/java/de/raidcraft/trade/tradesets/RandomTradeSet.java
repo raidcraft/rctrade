@@ -58,7 +58,7 @@ public class RandomTradeSet extends ConfigTradeSet {
                 // lets load all cached items and do not recalculate random table
                 for (TTradeSetCacheItem item : cache.getItems()) {
                     try {
-                        ItemStack itemStack = RaidCraft.getItem(item.getItem());
+                        ItemStack itemStack = RaidCraft.getSafeItem(item.getItem());
                         itemStack.setAmount(item.getAmount());
                         addOffer(new ItemOffer(item.getPrice(), itemStack));
                     } catch (CustomItemException e) {
