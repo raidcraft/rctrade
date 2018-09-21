@@ -1,6 +1,5 @@
 package de.raidcraft.trade.tradesets;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.random.RDSTable;
@@ -10,6 +9,7 @@ import de.raidcraft.trade.offers.ItemOffer;
 import de.raidcraft.trade.tables.TTradeSetCache;
 import de.raidcraft.trade.tables.TTradeSetCacheItem;
 import de.raidcraft.util.ConfigUtil;
+import io.ebean.EbeanServer;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.configuration.ConfigurationSection;
@@ -35,7 +35,7 @@ public class RandomTradeSet extends ConfigTradeSet {
         this.cooldown = config.getLong("cooldown");
         this.randomTable = randomTable;
         this.cache = RaidCraft.getDatabase(TradePlugin.class).find(TTradeSetCache.class).where()
-                .eq("trade_set", name).findUnique();
+                .eq("trade_set", name).findOne();
     }
 
     @Override
