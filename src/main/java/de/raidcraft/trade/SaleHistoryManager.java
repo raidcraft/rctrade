@@ -77,9 +77,9 @@ public class SaleHistoryManager {
             itemStorage.removeObject(tSoldItem.getStorageId());
         } catch (StorageException e) {
         }
-        TSaleLog log = plugin.getDatabase().find(TSaleLog.class).where().eq("sold_item_id", tSoldItem.getId()).findOne();
-        if (log != null) plugin.getDatabase().delete(log);
-        plugin.getDatabase().delete(tSoldItem);
+        TSaleLog log = plugin.getRcDatabase().find(TSaleLog.class).where().eq("sold_item_id", tSoldItem.getId()).findOne();
+        if (log != null) plugin.getRcDatabase().delete(log);
+        plugin.getRcDatabase().delete(tSoldItem);
     }
 
     private void deleteOldSales(Player player) {
