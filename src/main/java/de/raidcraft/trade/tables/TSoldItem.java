@@ -15,7 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "rctrade_sales")
+@Table(name = "rc_trade_sales")
 public class TSoldItem {
 
     @Id

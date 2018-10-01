@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@Table(name = "rctrade_tradeset_cache_items")
+@Table(name = "rc_trade_tradeset_cache_items")
 public class TTradeSetCacheItem {
 
     @Id

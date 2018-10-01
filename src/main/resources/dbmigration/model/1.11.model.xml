@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <createTable name="rc_trade_sales_log" pkName="pk_rc_trade_sales_log">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="uuid" type="uuid"/>
+            <column name="sold_item_id" type="integer" notnull="true"/>
+            <column name="item" type="varchar"/>
+            <column name="amount" type="integer" notnull="true"/>
+            <column name="price" type="double" notnull="true"/>
+            <column name="action" type="varchar"/>
+            <column name="timestamp" type="timestamp"/>
+        </createTable>
+        <createTable name="rc_trade_sales" pkName="pk_rc_trade_sales">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="storage_id" type="integer" notnull="true"/>
+            <column name="player" type="varchar"/>
+            <column name="player_id" type="uuid"/>
+            <column name="date" type="timestamp"/>
+            <column name="world" type="varchar"/>
+            <column name="world_id" type="uuid"/>
+        </createTable>
+        <createTable name="rc_trade_tradeset_cache" pkName="pk_rc_trade_tradeset_cache">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="trade_set" type="varchar"/>
+            <column name="last_update" type="timestamp"/>
+        </createTable>
+        <createTable name="rc_trade_tradeset_cache_items" pkName="pk_rc_trade_tradeset_cache_items">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="cache_id" type="integer" references="rc_trade_tradeset_cache.id"
+                    foreignKeyName="fk_rc_trade_tradeset_cache_items_cache_id"
+                    foreignKeyIndex="ix_rc_trade_tradeset_cache_items_cache_id"/>
+            <column name="item" type="varchar"/>
+            <column name="amount" type="integer" notnull="true"/>
+            <column name="price" type="double" notnull="true"/>
+        </createTable>
+    </changeSet>
+</migration>
