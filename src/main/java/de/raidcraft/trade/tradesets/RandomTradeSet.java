@@ -72,7 +72,7 @@ public class RandomTradeSet extends ConfigTradeSet {
         cache.getItems().clear();
         database.update(cache);
 
-        randomTable.getResult().stream().filter(object -> object instanceof ItemLootObject).forEach(object -> {
+        randomTable.loot().stream().filter(object -> object instanceof ItemLootObject).forEach(object -> {
             if (((ItemLootObject) object).getPrice() > 0) {
                 ItemOffer itemOffer = new ItemOffer(((ItemLootObject) object).getPrice(), ((ItemLootObject) object).getItemStack());
                 addOffer(itemOffer);
